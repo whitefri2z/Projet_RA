@@ -10,17 +10,28 @@ UCLASS()
 class PROJET_RA_API AArtefact : public AActor
 {
 	GENERATED_BODY()
+
+public:
 	
-public:	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Artefact", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UStaticMeshComponent> ArtefactMesh;
+	
+protected:
+
+public:
+
 	// Sets default values for this actor's properties
 	AArtefact();
-
+	// Called every frame
+	virtual void Tick(float DeltaTime) override;
+	
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
+	UFUNCTION(BlueprintCallable, Category = "Artefact")
+	void OnInputTouchBegin(const ETouchIndex::Type FingerIndex , UPrimitiveComponent* PrimitiveComponent);
+
+
 
 };
