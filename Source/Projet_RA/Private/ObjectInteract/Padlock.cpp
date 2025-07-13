@@ -64,7 +64,7 @@ void APadlock::BeginPlay()
 void APadlock::CheckCodePadlock()
 {
 	float DigitCode = FMath::Floor( PadlockKeyhole1->GetRelativeRotation().Roll / 36) ;
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("DigitCode : " + FString::SanitizeFloat(DigitCode)));
+	GEngine->AddOnScreenDebugMessage(-1, 0.5f, FColor::Red, TEXT("DigitCode : " + FString::SanitizeFloat(DigitCode)));
 
 	
 }
