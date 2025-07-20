@@ -4,10 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "Interface/InteractionInterface.h"
 #include "Artefact.generated.h"
 
 UCLASS()
-class PROJET_RA_API AArtefact : public AActor
+class PROJET_RA_API AArtefact : public AActor , public IInteractionInterface
 {
 	GENERATED_BODY()
 
@@ -24,6 +25,8 @@ public:
 	AArtefact();
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+
+	virtual void SuccessPuzzel_Implementation() override;
 	
 protected:
 	// Called when the game starts or when spawned

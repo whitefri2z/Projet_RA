@@ -4,10 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "Interface/InteractionInterface.h"
 #include "Padlock.generated.h"
 
 UCLASS()
-class PROJET_RA_API APadlock : public AActor
+class PROJET_RA_API APadlock : public AActor , public IInteractionInterface
 {
 	GENERATED_BODY()
 	
@@ -31,6 +32,9 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "PadlockVariables")
 	TObjectPtr<APlayerController> PlayerControllerRef;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "CubeVariables")
+	TObjectPtr<AActor> InteractwithActorRef;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "PadlockVariables")
 	TObjectPtr<UStaticMeshComponent> PadMovementMesh;
@@ -61,6 +65,12 @@ protected:
 
 	UFUNCTION(Blueprintable, Category = "Padlock")
 	void CheckCodePadlock();
+
+	UFUNCTION( BlueprintCallable, Category = "Padlock" )
+	int VerifyDigitCode(int Digit);
+
+	UFUNCTION(BlueprintCallable, Category = "Padlock")
+	float EditRotation(float Rotation);
 
 public:
 

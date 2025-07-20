@@ -57,16 +57,100 @@ void APadlock::BeginPlay()
 
 	PlayerControllerRef = GetWorld()->GetFirstPlayerController();
 
+	// initialize the Code Padlock Randomly
+	CodePadlock = FMath::RandRange(0, 999);
+	
 	GetWorldTimerManager().SetTimer( TimerHandle_CheckCodePadlock, this, &APadlock::CheckCodePadlock, 0.5f, true, 0.f );
 	
 }
 
 void APadlock::CheckCodePadlock()
 {
-	float DigitCode = FMath::Floor( PadlockKeyhole1->GetRelativeRotation().Roll / 36) ;
-	GEngine->AddOnScreenDebugMessage(-1, 0.5f, FColor::Red, TEXT("DigitCode : " + FString::SanitizeFloat(DigitCode)));
+	int DigitCode1 = FMath::TruncToInt( EditRotation(PadlockKeyhole1->GetRelativeRotation().Roll) / 36);
+	int DigitCode2 = FMath::TruncToInt( EditRotation(PadlockKeyhole2->GetRelativeRotation().Roll) / 36);
+	int DigitCode3 = FMath::TruncToInt( EditRotation(PadlockKeyhole3->GetRelativeRotation().Roll) / 36);
+
+	FString DigitCode = FString::Printf(TEXT("%d%d%d"), DigitCode1, DigitCode2, DigitCode3);
+	GEngine->AddOnScreenDebugMessage(-1, 0.5f, FColor::Blue, TEXT("DigitCode: " + DigitCode));
+	//Convert the CodePadlock to a string
+	FString CodePadlockString = FString::FromInt(CodePadlock);	
+
+	if(CodePadlockString.Len() != 3)
+	{
+		switch (CodePadlockString.Len())
+		{
+			case 1:
+				CodePadlockString = FString::Printf(TEXT("00%d"), CodePadlock);
+				break;
+			case 2:
+				CodePadlockString = FString::Printf(TEXT("0%d"), CodePadlock);
+				break;
+			default:
+				CodePadlockString = FString::Printf(TEXT("00%d"), CodePadlock);
+				break;
+		}
+	}
+	GEngine->AddOnScreenDebugMessage( -1, 0.5f, FColor::Yellow, TEXT("CodePadlockString: " + CodePadlockString));
+	if(DigitCode == CodePadlockString)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Padlock code is correct!"));
+		// Here you can add the logic to unlock the padlock
+		GetWorldTimerManager().ClearTimer(TimerHandle_CheckCodePadlock);
+		//Hide the padlock mesh
+		this->SetActorHiddenInGame(true);
+		PadlockMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+		if(InteractwithActorRef->IsValidLowLevel())
+		{
+			IInteractionInterface::Execute_SuccessPuzzel(InteractwithActorRef);
+		}
+	}
 
 	
+	
+}
+
+int APadlock::VerifyDigitCode(int Digit)
+{
+	switch (Digit)
+	{
+		case 0:
+			return 0;
+		case 1:
+			return 1;
+		case 2:
+			return 2;
+		case 3:
+			return 3;
+		case 4:
+			return 4;
+		case -5:
+			return 5;
+		case -4:
+			return 6;
+		case -3:
+			return 7;
+		case -2:
+			return 8;
+		case -1:
+			return 9;
+		default: 
+			return -1; // Invalid digit
+	}
+}
+
+float APadlock::EditRotation(float Rotation)
+{
+
+	if( Rotation < 0.f )
+	{
+		return 180.f + (180- FMath::Abs(Rotation));
+	}
+	else
+	{
+		return Rotation;
+	}
+
 }
 
 // Called every frame
@@ -92,8 +176,8 @@ void APadlock::Tick(float DeltaTime)
 
 			FVector ReturnDirection = UKismetMathLibrary::GetDirectionUnitVector(StartWorldPositionTouch, NewWorldPositionTouch);
 
-			PadMovementMesh->AddRelativeRotation(FRotator(0.f,  0.f, -1.f) *  FVector::DotProduct(ReturnDirection, FVector::RightVector)
-				* DeltaTime * 1000.f);
+			PadMovementMesh->AddRelativeRotation(FRotator(0.f,  0.f, -1.f) *  FVector::DotProduct(ReturnDirection, FVector::UpVector)
+				* DeltaTime * 100.f);
 		}
 		else
 		{

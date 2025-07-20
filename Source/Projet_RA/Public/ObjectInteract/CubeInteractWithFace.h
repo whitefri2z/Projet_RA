@@ -4,10 +4,23 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "Interface/InteractionInterface.h"
 #include "CubeInteractWithFace.generated.h"
 
+UENUM(BlueprintType)
+enum class EFaceCube : uint8 
+{
+	Front UMETA(DisplayName = "Front" ),
+	Back UMETA(DisplayName = "Back" ),
+	Left UMETA(DisplayName = "Left" ),
+	Right UMETA(DisplayName = "Right" ),
+	Top UMETA(DisplayName = "Top" ),
+	Bottom UMETA(DisplayName = "Bottom" )
+};
+
+
 UCLASS()
-class PROJET_RA_API ACubeInteractWithFace : public AActor
+class PROJET_RA_API ACubeInteractWithFace : public AActor , public IInteractionInterface
 {
 	GENERATED_BODY()
 	
@@ -21,6 +34,12 @@ protected:
 
 	UPROPERTY( VisibleAnywhere, BlueprintReadOnly, Category = "CubeVariables")
 	TObjectPtr<APlayerController> PlayerControllerRef;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "CubeVariables")
+	EFaceCube FaceCubeTouched;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "CubeVariables")
+	TObjectPtr<AActor> InteractwithActorRef;
 
 
 	

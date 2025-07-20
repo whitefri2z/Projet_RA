@@ -25,10 +25,13 @@ void ACubeInteractWithFace::BeginPlay()
 	Super::BeginPlay();
 
 	PlayerControllerRef = GetWorld()->GetFirstPlayerController();
+
+	// GetRandom face to touch
+	//FaceCubeTouched = static_cast<EFaceCube>(FMath::RandRange(0, static_cast<int32>(EFaceCube::Bottom)));
+
+	FaceCubeTouched = EFaceCube::Right; // For testing purposes, we set it to Right face
 	
 }
-
-
 
 // Called every frame
 void ACubeInteractWithFace::Tick(float DeltaTime)
@@ -60,7 +63,7 @@ void ACubeInteractWithFace::OnInputTouchBeginCPP(  ETouchIndex::Type ButtonPress
 			UKismetSystemLibrary::LineTraceSingleForObjects(
 				GetWorld(),
 				WorldLocation,
-				GetActorLocation(),
+				WorldLocation + WorldDirection * 1000.f, // Adjust the length of the trace as needed
 				TArray<TEnumAsByte<EObjectTypeQuery>>{ UCollisionProfile::Get()->ConvertToObjectType(ECC_WorldDynamic),
 					UCollisionProfile::Get()->ConvertToObjectType(ECC_WorldStatic) }, // Adjust the object type query as needed
 				true,
@@ -72,42 +75,80 @@ void ACubeInteractWithFace::OnInputTouchBeginCPP(  ETouchIndex::Type ButtonPress
 
 			if(HitResult.bBlockingHit)
 			{
-				// print the hit location
-				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Hit Location: ") + HitResult.ImpactPoint.ToString());
-
-				FVector UnRotateVector = GetUnrotatedLocation(HitResult.ImpactPoint);
-
-				float X = UKismetMathLibrary::Dot_VectorVector( UnRotateVector, FVector(1,0,0));
-				float Y = UKismetMathLibrary::Dot_VectorVector( UnRotateVector, FVector(0,1,0));
-				float Z = UKismetMathLibrary::Dot_VectorVector( UnRotateVector, FVector(0,0,1));
-
-
-				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("X: ") + FString::SanitizeFloat(X) +
-					TEXT(" Y: ") + FString::SanitizeFloat(Y) + TEXT(" Z: ") + FString::SanitizeFloat(Z));
-
-				if(X == 1.f)
+				//Get Hit Cube face
+				FVector HitNormal = HitResult.ImpactNormal;
+				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("Hit Normal: ") + HitNormal.ToString());
+				if(HitNormal.X == 1)
 				{
 					GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Touched the right face!"));
+					if(FaceCubeTouched == EFaceCube::Right)
+					{
+						GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Correct face touched!"));
+						if( InteractwithActorRef && InteractwithActorRef->Implements<UInteractionInterface>())
+						{
+							IInteractionInterface::Execute_SuccessPuzzel(InteractwithActorRef);
+						}
+					}
 				}
-				else if(X == -1.f)
+				else if (HitNormal.X == -1)
 				{
 					GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Touched the left face!"));
+					if(FaceCubeTouched == EFaceCube::Left)
+					{
+						GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Correct face touched!"));
+						if( InteractwithActorRef && InteractwithActorRef->Implements<UInteractionInterface>())
+						{
+							IInteractionInterface::Execute_SuccessPuzzel(InteractwithActorRef);
+						}
+					}
 				}
-				else if(Y == 1.f)
+				else if (HitNormal.Y == 1)
 				{
 					GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Touched the top face!"));
+					if(FaceCubeTouched == EFaceCube::Top)
+					{
+						GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Correct face touched!"));
+						if( InteractwithActorRef && InteractwithActorRef->Implements<UInteractionInterface>())
+						{
+							IInteractionInterface::Execute_SuccessPuzzel(InteractwithActorRef);
+						}
+					}
 				}
-				else if(Y == -1.f)
+				else if (HitNormal.Y == -1)
 				{
 					GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Touched the bottom face!"));
+					if(FaceCubeTouched == EFaceCube::Bottom)
+					{
+						GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Correct face touched!"));
+						if( InteractwithActorRef && InteractwithActorRef->Implements<UInteractionInterface>())
+						{
+							IInteractionInterface::Execute_SuccessPuzzel(InteractwithActorRef);
+						}
+					}
 				}
-				else if(Z == 1.f)
+				else if (HitNormal.Z == 1)
 				{
 					GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Touched the front face!"));
+					if(FaceCubeTouched == EFaceCube::Front)
+					{
+						GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Correct face touched!"));
+						if( InteractwithActorRef && InteractwithActorRef->Implements<UInteractionInterface>())
+						{
+							IInteractionInterface::Execute_SuccessPuzzel(InteractwithActorRef);
+						}
+					}
 				}
-				else if(Z == -1.f)
+				else if (HitNormal.Z == -1)
 				{
 					GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Touched the back face!"));
+					if(FaceCubeTouched == EFaceCube::Back)
+					{
+						GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Correct face touched!"));
+						if( InteractwithActorRef && InteractwithActorRef->Implements<UInteractionInterface>())
+						{
+							IInteractionInterface::Execute_SuccessPuzzel(InteractwithActorRef);
+						}
+					}
 				}
 			}
 			else

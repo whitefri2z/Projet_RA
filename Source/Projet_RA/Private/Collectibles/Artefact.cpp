@@ -48,3 +48,12 @@ void AArtefact::Tick(float DeltaTime)
 
 }
 
+void AArtefact::SuccessPuzzel_Implementation()
+{
+	IInteractionInterface::SuccessPuzzel_Implementation();
+
+	ArtefactMesh->SetVisibility(true);
+	ArtefactMesh->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Artefact puzzle solved! Artefact is now visible and interactable."));
+}
+
