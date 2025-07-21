@@ -87,6 +87,9 @@ void ACubeInteractWithFace::OnInputTouchBeginCPP(  ETouchIndex::Type ButtonPress
 						if( InteractwithActorRef && InteractwithActorRef->Implements<UInteractionInterface>())
 						{
 							IInteractionInterface::Execute_SuccessPuzzel(InteractwithActorRef);
+							SetActorHiddenInGame(true);
+							CubeMesh->SetVisibility(false);
+							CubeMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 						}
 					}
 				}
@@ -99,6 +102,9 @@ void ACubeInteractWithFace::OnInputTouchBeginCPP(  ETouchIndex::Type ButtonPress
 						if( InteractwithActorRef && InteractwithActorRef->Implements<UInteractionInterface>())
 						{
 							IInteractionInterface::Execute_SuccessPuzzel(InteractwithActorRef);
+							SetActorHiddenInGame(true);
+							CubeMesh->SetVisibility(false);
+							CubeMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 						}
 					}
 				}
@@ -111,6 +117,9 @@ void ACubeInteractWithFace::OnInputTouchBeginCPP(  ETouchIndex::Type ButtonPress
 						if( InteractwithActorRef && InteractwithActorRef->Implements<UInteractionInterface>())
 						{
 							IInteractionInterface::Execute_SuccessPuzzel(InteractwithActorRef);
+							SetActorHiddenInGame(true);
+							CubeMesh->SetVisibility(false);
+							CubeMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 						}
 					}
 				}
@@ -123,6 +132,9 @@ void ACubeInteractWithFace::OnInputTouchBeginCPP(  ETouchIndex::Type ButtonPress
 						if( InteractwithActorRef && InteractwithActorRef->Implements<UInteractionInterface>())
 						{
 							IInteractionInterface::Execute_SuccessPuzzel(InteractwithActorRef);
+							SetActorHiddenInGame(true);
+							CubeMesh->SetVisibility(false);
+							CubeMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 						}
 					}
 				}
@@ -135,6 +147,9 @@ void ACubeInteractWithFace::OnInputTouchBeginCPP(  ETouchIndex::Type ButtonPress
 						if( InteractwithActorRef && InteractwithActorRef->Implements<UInteractionInterface>())
 						{
 							IInteractionInterface::Execute_SuccessPuzzel(InteractwithActorRef);
+							SetActorHiddenInGame(true);
+							CubeMesh->SetVisibility(false);
+							CubeMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 						}
 					}
 				}
@@ -147,6 +162,9 @@ void ACubeInteractWithFace::OnInputTouchBeginCPP(  ETouchIndex::Type ButtonPress
 						if( InteractwithActorRef && InteractwithActorRef->Implements<UInteractionInterface>())
 						{
 							IInteractionInterface::Execute_SuccessPuzzel(InteractwithActorRef);
+							SetActorHiddenInGame(true);
+							CubeMesh->SetVisibility(false);
+							CubeMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 						}
 					}
 				}
