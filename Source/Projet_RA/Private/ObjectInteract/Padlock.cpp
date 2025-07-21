@@ -177,7 +177,7 @@ void APadlock::Tick(float DeltaTime)
 			FVector ReturnDirection = UKismetMathLibrary::GetDirectionUnitVector(StartWorldPositionTouch, NewWorldPositionTouch);
 
 			PadMovementMesh->AddRelativeRotation(FRotator(0.f,  0.f, -1.f) *  FVector::DotProduct(ReturnDirection, FVector::UpVector)
-				* DeltaTime * 100.f);
+				* DeltaTime * 50.f);
 		}
 		else
 		{
