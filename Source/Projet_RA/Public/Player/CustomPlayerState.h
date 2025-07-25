@@ -26,7 +26,11 @@ public:
 	{
 		ArtefactsCollected++;
 		GEngine->AddOnScreenDebugMessage( -1, 5.f, FColor::Orange, FString::Printf(TEXT("Artefact collected! Total: %d"), ArtefactsCollected));
+		OnArtefactCollected();
 	}
+
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Artefact")
+	void OnArtefactCollected();
 
 	UFUNCTION(BlueprintCallable, Category = "PlayerState")
 	int GetArtefactsCollected() const{return ArtefactsCollected;}

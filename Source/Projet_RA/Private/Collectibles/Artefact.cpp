@@ -37,8 +37,11 @@ void AArtefact::OnInputTouchBegin(const ETouchIndex::Type FingerIndex , UPrimiti
 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Artefact touched!"));
 
 	Cast<ACustomPlayerState>( GetWorld()->GetGameState()->PlayerArray[0])->AddArtefact();
+	SetActorHiddenInGame( true ); // Hide the artefact mesh after collection
+	ArtefactMesh->SetVisibility(false);
+	ArtefactMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision); // Disable collision after collection
 	
-	Destroy();
+	//Destroy();
 }
 
 // Called every frame

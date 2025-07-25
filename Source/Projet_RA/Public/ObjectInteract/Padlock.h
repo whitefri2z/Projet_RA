@@ -7,6 +7,8 @@
 #include "Interface/InteractionInterface.h"
 #include "Padlock.generated.h"
 
+class UTextRenderComponent;
+
 UCLASS()
 class PROJET_RA_API APadlock : public AActor , public IInteractionInterface
 {
@@ -26,6 +28,23 @@ public:
 	TObjectPtr<UStaticMeshComponent> PadlockKeyhole2;
 	UPROPERTY( EditAnywhere, BlueprintReadWrite, Category = "PadlockMesh" )
 	TObjectPtr<UStaticMeshComponent> PadlockKeyhole3;
+	UPROPERTY( EditAnywhere, BlueprintReadWrite, Category = "PadlockMesh" )
+	TObjectPtr<UStaticMeshComponent> PadlockKeyhole4;
+	UPROPERTY( EditAnywhere, BlueprintReadWrite, Category = "PadlockMesh" )
+	TObjectPtr<UStaticMeshComponent> PadlockKeyhole5;
+	UPROPERTY( EditAnywhere, BlueprintReadWrite, Category = "PadlockMesh" )
+	TObjectPtr<UStaticMeshComponent> PadlockKeyhole6;
+	UPROPERTY( EditAnywhere, BlueprintReadWrite, Category = "PadlockMesh" )
+	TObjectPtr<UStaticMeshComponent> PadlockKeyhole7;
+	UPROPERTY( EditAnywhere, BlueprintReadWrite, Category = "PadlockMesh" )
+	TObjectPtr<UStaticMeshComponent> PadlockKeyhole8;
+	UPROPERTY( EditAnywhere, BlueprintReadWrite, Category = "PadlockMesh" )
+	TObjectPtr<UStaticMeshComponent> PadlockKeyhole9;
+	UPROPERTY( EditAnywhere, BlueprintReadWrite, Category = "PadlockMesh" )
+	TObjectPtr<UStaticMeshComponent> PadlockKeyhole0;
+
+	UPROPERTY( EditAnywhere, BlueprintReadWrite, Category = "PadlockText" )
+	TObjectPtr<UTextRenderComponent> PadlockText;
 	
 
 protected:
@@ -52,6 +71,10 @@ protected:
 	int NumbreOfDigits;
 	UPROPERTY(EditAnywhere , BlueprintReadWrite, Category = "CodePadlock")
 	int CodePadlock;
+	UPROPERTY(EditAnywhere , BlueprintReadWrite, Category = "CodePadlock")
+	int CurrentDigit = 0;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "CodePadlock")
+	FString CodePadlockString;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "TimerPadlock")
 	FTimerHandle TimerHandle_CheckCodePadlock;
@@ -61,17 +84,10 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-	
-
-	UFUNCTION(Blueprintable, Category = "Padlock")
-	void CheckCodePadlock();
-
+	FString ReplaceCharAt( const FString& OriginalString, int32 Index, TCHAR NewChar );
 	UFUNCTION( BlueprintCallable, Category = "Padlock" )
-	int VerifyDigitCode(int Digit);
-
-	UFUNCTION(BlueprintCallable, Category = "Padlock")
-	float EditRotation(float Rotation);
-
+	void HideActor();
+	
 public:
 
 	// Sets default values for this actor's properties

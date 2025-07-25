@@ -3,3 +3,6 @@
 
 #include "Player/CustomPlayerState.h"
 
+void ACustomPlayerState::OnArtefactCollected_Implementation()
+{
+}

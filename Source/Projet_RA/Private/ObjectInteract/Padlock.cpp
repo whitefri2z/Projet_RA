@@ -3,6 +3,7 @@
 
 #include "ObjectInteract/Padlock.h"
 
+#include "Components/TextRenderComponent.h"
 #include "Kismet/KismetMathLibrary.h"
 
 // Sets default values
@@ -23,6 +24,34 @@ APadlock::APadlock()
 	PadlockKeyhole3 = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("PadlockKeyhole3"));
 	PadlockKeyhole3->SetupAttachment(RootComponent);
 	PadlockKeyhole3->OnInputTouchBegin.AddDynamic( this, &APadlock::OnInputTouchBeginCPP );
+	PadlockKeyhole4 = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("PadlockKeyhole4"));
+	PadlockKeyhole4->SetupAttachment(RootComponent);
+	PadlockKeyhole4->OnInputTouchBegin.AddDynamic( this, &APadlock::OnInputTouchBeginCPP );
+	PadlockKeyhole5 = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("PadlockKeyhole5"));
+	PadlockKeyhole5->SetupAttachment(RootComponent);
+	PadlockKeyhole5->OnInputTouchBegin.AddDynamic( this, &APadlock::OnInputTouchBeginCPP );
+	PadlockKeyhole6 = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("PadlockKeyhole6"));
+	PadlockKeyhole6->SetupAttachment(RootComponent);
+	PadlockKeyhole6->OnInputTouchBegin.AddDynamic( this, &APadlock::OnInputTouchBeginCPP );
+	PadlockKeyhole7 = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("PadlockKeyhole7"));
+	PadlockKeyhole7->SetupAttachment(RootComponent);
+	PadlockKeyhole7->OnInputTouchBegin.AddDynamic( this, &APadlock::OnInputTouchBeginCPP );
+	PadlockKeyhole8 = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("PadlockKeyhole8"));
+	PadlockKeyhole8->SetupAttachment(RootComponent);
+	PadlockKeyhole8->OnInputTouchBegin.AddDynamic( this, &APadlock::OnInputTouchBeginCPP );
+	PadlockKeyhole9 = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("PadlockKeyhole9"));
+	PadlockKeyhole9->SetupAttachment(RootComponent);
+	PadlockKeyhole9->OnInputTouchBegin.AddDynamic( this, &APadlock::OnInputTouchBeginCPP );
+	PadlockKeyhole0 = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("PadlockKeyhole0"));
+	PadlockKeyhole0->SetupAttachment(RootComponent);
+	PadlockKeyhole0->OnInputTouchBegin.AddDynamic( this, &APadlock::OnInputTouchBeginCPP );
+
+	PadlockText = CreateDefaultSubobject<UTextRenderComponent>(TEXT("PadlockText"));
+	PadlockText->SetupAttachment(RootComponent);
+	PadlockText->SetText(FText::FromString("___"));
+	PadlockText->SetHorizontalAlignment(EHTA_Center);
+	PadlockText->SetWorldSize(50.f);
+	
 
 	
 
@@ -31,23 +60,6 @@ APadlock::APadlock()
 void APadlock::OnConstruction(const FTransform& Transform)
 {
 	Super::OnConstruction(Transform);
-
-	/*
-	for (UStaticMeshComponent* Keyhole : PadlockKeyhole)
-	{
-		if (Keyhole)
-		{
-			Keyhole->DestroyComponent();
-		}
-	}
-	PadlockKeyhole.Empty();
-
-	for (int i=0; i < NumbreOfDigits; i++)
-	{
-		PadlockKeyhole.Add(NewObject<UStaticMeshComponent>(this));
-		PadlockKeyhole[i]->SetupAttachment(RootComponent);
-		UE_LOG(LogTemp, Warning, TEXT("PadlockKeyhole[%d] created."), i);
-	}*/
 }
 
 // Called when the game starts or when spawned
@@ -59,98 +71,28 @@ void APadlock::BeginPlay()
 
 	// initialize the Code Padlock Randomly
 	CodePadlock = FMath::RandRange(0, 999);
-	
-	GetWorldTimerManager().SetTimer( TimerHandle_CheckCodePadlock, this, &APadlock::CheckCodePadlock, 0.5f, true, 0.f );
-	
-}
-
-void APadlock::CheckCodePadlock()
-{
-	int DigitCode1 = FMath::TruncToInt( EditRotation(PadlockKeyhole1->GetRelativeRotation().Roll) / 36);
-	int DigitCode2 = FMath::TruncToInt( EditRotation(PadlockKeyhole2->GetRelativeRotation().Roll) / 36);
-	int DigitCode3 = FMath::TruncToInt( EditRotation(PadlockKeyhole3->GetRelativeRotation().Roll) / 36);
-
-	FString DigitCode = FString::Printf(TEXT("%d%d%d"), DigitCode1, DigitCode2, DigitCode3);
-	GEngine->AddOnScreenDebugMessage(-1, 0.5f, FColor::Blue, TEXT("DigitCode: " + DigitCode));
-	//Convert the CodePadlock to a string
-	FString CodePadlockString = FString::FromInt(CodePadlock);	
-
-	if(CodePadlockString.Len() != 3)
-	{
-		switch (CodePadlockString.Len())
-		{
-			case 1:
-				CodePadlockString = FString::Printf(TEXT("00%d"), CodePadlock);
-				break;
-			case 2:
-				CodePadlockString = FString::Printf(TEXT("0%d"), CodePadlock);
-				break;
-			default:
-				CodePadlockString = FString::Printf(TEXT("00%d"), CodePadlock);
-				break;
-		}
-	}
-	GEngine->AddOnScreenDebugMessage( -1, 0.5f, FColor::Yellow, TEXT("CodePadlockString: " + CodePadlockString));
-	if(DigitCode == CodePadlockString)
-	{
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Padlock code is correct!"));
-		// Here you can add the logic to unlock the padlock
-		GetWorldTimerManager().ClearTimer(TimerHandle_CheckCodePadlock);
-		//Hide the padlock mesh
-		this->SetActorHiddenInGame(true);
-		PadlockMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-
-		if(InteractwithActorRef->IsValidLowLevel())
-		{
-			IInteractionInterface::Execute_SuccessPuzzel(InteractwithActorRef);
-		}
-	}
-
-	
+	GEngine->AddOnScreenDebugMessage(-1, 500.f, FColor::Green, TEXT("Padlock code is: " + FString::FromInt(CodePadlock)));
+	CodePadlockString = "___";
 	
 }
 
-int APadlock::VerifyDigitCode(int Digit)
+
+FString APadlock::ReplaceCharAt(const FString& OriginalString, int32 Index, TCHAR NewChar)
 {
-	switch (Digit)
+	if (!OriginalString.IsValidIndex(Index))
 	{
-		case 0:
-			return 0;
-		case 1:
-			return 1;
-		case 2:
-			return 2;
-		case 3:
-			return 3;
-		case 4:
-			return 4;
-		case -5:
-			return 5;
-		case -4:
-			return 6;
-		case -3:
-			return 7;
-		case -2:
-			return 8;
-		case -1:
-			return 9;
-		default: 
-			return -1; // Invalid digit
+		return OriginalString; // Index out of bounds, return original string
 	}
+
+	TArray<TCHAR> CharArray = OriginalString.GetCharArray();
+	CharArray[Index] = NewChar;
+	return FString(CharArray.GetData()).Left(CharArray.Num() - 1); // Convert back to FString and remove the null terminator
 }
 
-float APadlock::EditRotation(float Rotation)
+void APadlock::HideActor()
 {
-
-	if( Rotation < 0.f )
-	{
-		return 180.f + (180- FMath::Abs(Rotation));
-	}
-	else
-	{
-		return Rotation;
-	}
-
+	SetActorHiddenInGame( true );
+	SetActorEnableCollision( false );
 }
 
 // Called every frame
@@ -195,10 +137,69 @@ void APadlock::OnInputTouchBeginCPP(const ETouchIndex::Type FingerIndex, UPrimit
 
 	if(PrimitiveComponent->IsValidLowLevel() && FingerIndex == ETouchIndex::Type::Touch1 && PlayerControllerRef->IsValidLowLevel())
 	{
-		bool bIsPressed;
-		PlayerControllerRef->GetInputTouchState(FingerIndex, StartPositionTouch.X, StartPositionTouch.Y, bIsPressed);
-		PadMovementMesh = Cast<UStaticMeshComponent>(PrimitiveComponent);
-		bIsMoving = true;
+		
+		
+		if(PrimitiveComponent == PadlockKeyhole1)
+		{
+			CodePadlockString = ReplaceCharAt(CodePadlockString, CurrentDigit, '1');
+		}
+		if(PrimitiveComponent == PadlockKeyhole2)
+		{
+			CodePadlockString = ReplaceCharAt(CodePadlockString, CurrentDigit, '2');
+		}
+		if(PrimitiveComponent == PadlockKeyhole3)
+		{
+			CodePadlockString = ReplaceCharAt(CodePadlockString, CurrentDigit, '3');
+		}
+		if(PrimitiveComponent == PadlockKeyhole4)
+		{
+			CodePadlockString = ReplaceCharAt(CodePadlockString, CurrentDigit, '4');
+		}
+		if(PrimitiveComponent == PadlockKeyhole5)
+		{
+			CodePadlockString = ReplaceCharAt(CodePadlockString, CurrentDigit, '5');
+		}
+		if(PrimitiveComponent == PadlockKeyhole6)
+		{
+			CodePadlockString = ReplaceCharAt(CodePadlockString, CurrentDigit, '6');
+		}
+		if(PrimitiveComponent == PadlockKeyhole7)
+		{
+			CodePadlockString = ReplaceCharAt(CodePadlockString, CurrentDigit, '7');
+		}
+		if(PrimitiveComponent == PadlockKeyhole8)
+		{
+			CodePadlockString = ReplaceCharAt(CodePadlockString, CurrentDigit, '8');
+		}
+		if(PrimitiveComponent == PadlockKeyhole9)
+		{
+			CodePadlockString = ReplaceCharAt(CodePadlockString, CurrentDigit, '9');
+		}
+		if(PrimitiveComponent == PadlockKeyhole0)
+		{
+			CodePadlockString = ReplaceCharAt(CodePadlockString, CurrentDigit, '0');
+		}
+		CurrentDigit++;
+		if(CurrentDigit >= NumbreOfDigits)
+		{
+			CurrentDigit = 0;
+			if(CodePadlockString == FString::FromInt(CodePadlock))
+			{
+				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Padlock code is correct!"));
+				if(InteractwithActorRef->IsValidLowLevel())
+				{
+					IInteractionInterface::Execute_SuccessPuzzel(InteractwithActorRef);
+				}
+				HideActor();
+			}
+			else
+			{
+				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Padlock code is incorrect!"));
+				CodePadlockString = "___";
+			}
+		}
+		
+		PadlockText->SetText(FText::FromString(CodePadlockString));
 	}
 }
 
