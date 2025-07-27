@@ -41,6 +41,11 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "CubeVariables")
 	TObjectPtr<AActor> InteractwithActorRef;
 
+	bool bIsTouching2 = false;
+
+	FVector2D PreviousTouchPos;
+	FVector2D CurrentTouchPos;
+
 
 	
 	// Called when the game starts or when spawned
@@ -51,6 +56,12 @@ protected:
 
 	UFUNCTION( BlueprintCallable, BlueprintNativeEvent, Category = "CubeInteraction")
 	FVector GetUnrotatedLocation(FVector Location);
+
+	UFUNCTION( BlueprintCallable, Category = "CubeInteraction")
+	void VerifyInteractionWithFace(ETouchIndex::Type ButtonPressed);
+
+	UFUNCTION( BlueprintCallable, Category = "CubeInteraction")
+	void RotateMesh(FVector2D Delta);
 	
 public:	
 	// Called every frame

@@ -14,6 +14,10 @@ ACubeInteractWithFace::ACubeInteractWithFace()
 
 	CubeMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("CubeMesh"));
 	RootComponent = CubeMesh;
+	CubeMesh->SetSimulatePhysics(true);
+	CubeMesh->SetEnableGravity(false);
+	CubeMesh->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+	CubeMesh->SetCollisionObjectType(ECC_PhysicsBody);
 
 	CubeMesh->OnInputTouchBegin.AddDynamic(this, &ACubeInteractWithFace::OnInputTouchBeginCPP);
 
@@ -33,18 +37,63 @@ void ACubeInteractWithFace::BeginPlay()
 	
 }
 
+
+
 // Called every frame
 void ACubeInteractWithFace::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+
+	if(bIsTouching2)
+	{
+		float x,y;
+		bool bIsPressed;
+		PlayerControllerRef->GetInputTouchState(ETouchIndex::Type::Touch2, x, y, bIsPressed);
+		if(!bIsPressed)
+		{
+			bIsTouching2 = false;
+			return;
+		}
+		CurrentTouchPos = FVector2D(x, y);
+
+		RotateMesh(CurrentTouchPos - PreviousTouchPos);
+		PreviousTouchPos = CurrentTouchPos;
+	}
+		
+
 }
 
 void ACubeInteractWithFace::OnInputTouchBeginCPP(  ETouchIndex::Type ButtonPressed, UPrimitiveComponent* TouchedComponent)
 {
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Touch Begin Detected!"));
-	if (TouchedComponent == CubeMesh)
+	if (TouchedComponent == CubeMesh && ButtonPressed == ETouchIndex::Touch1)
 	{
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Touched the cube mesh!"));
+		// Call the function to verify interaction with the cube face
+		// Pass the ButtonPressed parameter to the function
+		VerifyInteractionWithFace(ButtonPressed);
+	}
+	else if (TouchedComponent == CubeMesh && ButtonPressed == ETouchIndex::Touch2)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Touched the cube mesh with Touch2!"));
+		// Call the function to verify interaction with the cube face
+		// Pass the ButtonPressed parameter to the function
+		float x,y;
+		bIsTouching2 = true;
+		PlayerControllerRef->GetInputTouchState(ETouchIndex::Type::Touch2, x, y, bIsTouching2);
+		PreviousTouchPos = FVector2D(x, y);
+
+	}
+
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Touched component is not the cube mesh."));
+		bIsTouching2 = false;
+	}
+}
+
+void ACubeInteractWithFace::VerifyInteractionWithFace(ETouchIndex::Type ButtonPressed)
+{
 		// Handle interaction with the cube face here
 		UE_LOG(LogTemp, Warning, TEXT("Cube face touched!"));
 
@@ -174,12 +223,12 @@ void ACubeInteractWithFace::OnInputTouchBeginCPP(  ETouchIndex::Type ButtonPress
 				UE_LOG(LogTemp, Warning, TEXT("No hit detected."));
 			}
 		}
-		
-	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Touched component is not the cube mesh."));
-	}
+}
+
+void ACubeInteractWithFace::RotateMesh(FVector2D Delta)
+{
+	FVector Torque = FVector(Delta.Y, -Delta.X, 0) * 1.0f; // Adjust the multiplier as needed
+	CubeMesh->AddTorqueInRadians(Torque, NAME_None, true);
 }
 
 FVector ACubeInteractWithFace::GetUnrotatedLocation_Implementation(FVector Location)
