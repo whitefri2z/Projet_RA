@@ -53,6 +53,7 @@ void ACubeInteractWithFace::Tick(float DeltaTime)
 		if(!bIsPressed)
 		{
 			bIsTouching2 = false;
+			CubeMesh->SetPhysicsAngularVelocityInDegrees(FVector::ZeroVector);
 			return;
 		}
 		CurrentTouchPos = FVector2D(x, y);
@@ -60,7 +61,11 @@ void ACubeInteractWithFace::Tick(float DeltaTime)
 		RotateMesh(CurrentTouchPos - PreviousTouchPos);
 		PreviousTouchPos = CurrentTouchPos;
 	}
-		
+	
+
+
+
+	
 
 }
 
@@ -71,7 +76,10 @@ void ACubeInteractWithFace::OnInputTouchBeginCPP(  ETouchIndex::Type ButtonPress
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Touched the cube mesh!"));
 		// Call the function to verify interaction with the cube face
 		// Pass the ButtonPressed parameter to the function
-		VerifyInteractionWithFace(ButtonPressed);
+
+		TimerVerifyInteractionDelegate = FTimerDelegate::CreateUObject(this, &ACubeInteractWithFace::VerifyInteractionWithFace, ButtonPressed);
+		
+		GetWorldTimerManager().SetTimer( TimerVerifyInteraction, TimerVerifyInteractionDelegate, 0.3f, false);
 	}
 	else if (TouchedComponent == CubeMesh && ButtonPressed == ETouchIndex::Touch2)
 	{
@@ -95,9 +103,10 @@ void ACubeInteractWithFace::OnInputTouchBeginCPP(  ETouchIndex::Type ButtonPress
 void ACubeInteractWithFace::VerifyInteractionWithFace(ETouchIndex::Type ButtonPressed)
 {
 		// Handle interaction with the cube face here
-		UE_LOG(LogTemp, Warning, TEXT("Cube face touched!"));
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Verifying interaction with cube face..."));
 
-		
+		if (bIsTouching2)
+			return;
 		if(PlayerControllerRef->IsValidLowLevel())
 		{
 			//Get the touch location
@@ -114,7 +123,7 @@ void ACubeInteractWithFace::VerifyInteractionWithFace(ETouchIndex::Type ButtonPr
 				WorldLocation,
 				WorldLocation + WorldDirection * 1000.f, // Adjust the length of the trace as needed
 				TArray<TEnumAsByte<EObjectTypeQuery>>{ UCollisionProfile::Get()->ConvertToObjectType(ECC_WorldDynamic),
-					UCollisionProfile::Get()->ConvertToObjectType(ECC_WorldStatic) }, // Adjust the object type query as needed
+					UCollisionProfile::Get()->ConvertToObjectType(ECC_WorldStatic), UCollisionProfile::Get()->ConvertToObjectType(ECC_PhysicsBody) }, // Adjust the object type query as needed
 				true,
 				TArray<AActor*>(),
 				EDrawDebugTrace::None,
@@ -220,15 +229,23 @@ void ACubeInteractWithFace::VerifyInteractionWithFace(ETouchIndex::Type ButtonPr
 			}
 			else
 			{
-				UE_LOG(LogTemp, Warning, TEXT("No hit detected."));
+				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("No blocking hit detected."));
 			}
 		}
+	else
+	{
+		GEngine->AddOnScreenDebugMessage( -1, 5.f, FColor::Red, TEXT("PlayerControllerRef is not valid."));
+	}
 }
 
 void ACubeInteractWithFace::RotateMesh(FVector2D Delta)
 {
 	FVector Torque = FVector(Delta.Y, -Delta.X, 0) * 1.0f; // Adjust the multiplier as needed
 	CubeMesh->AddTorqueInRadians(Torque, NAME_None, true);
+	// Get the current velocity of the mesh
+
+	
+	
 }
 
 FVector ACubeInteractWithFace::GetUnrotatedLocation_Implementation(FVector Location)

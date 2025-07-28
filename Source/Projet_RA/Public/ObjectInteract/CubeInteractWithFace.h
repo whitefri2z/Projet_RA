@@ -46,6 +46,9 @@ protected:
 	FVector2D PreviousTouchPos;
 	FVector2D CurrentTouchPos;
 
+	FTimerHandle TimerVerifyInteraction;
+	FTimerDelegate TimerVerifyInteractionDelegate;
+
 
 	
 	// Called when the game starts or when spawned
@@ -62,6 +65,7 @@ protected:
 
 	UFUNCTION( BlueprintCallable, Category = "CubeInteraction")
 	void RotateMesh(FVector2D Delta);
+
 	
 public:	
 	// Called every frame
