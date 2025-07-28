@@ -7,6 +7,21 @@
 #include "Interface/InteractionInterface.h"
 #include "Artefact.generated.h"
 
+UENUM(BlueprintType)
+enum class EArtefactDifficult : uint8
+{
+	Easy UMETA(DisplayName = "Easy"),
+	Medium UMETA(DisplayName = "Medium"),
+	Hard UMETA(DisplayName = "Hard"),
+};
+
+UENUM()
+enum class EArtefactType : uint8
+{
+	Primary UMETA(DisplayName = "Primary"),
+	Secondary UMETA(DisplayName = "Secondary"),
+};
+
 UCLASS()
 class PROJET_RA_API AArtefact : public AActor , public IInteractionInterface
 {
@@ -18,6 +33,18 @@ public:
 	TObjectPtr<UStaticMeshComponent> ArtefactMesh;
 	
 protected:
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Artefact", meta = (AllowPrivateAccess = "true"))
+	EArtefactDifficult ArtefactDifficult = EArtefactDifficult::Easy;
+	UPROPERTY( EditAnywhere, BlueprintReadWrite, Category = "Artefact", meta = (AllowPrivateAccess = "true"))
+	EArtefactType ArtefactType = EArtefactType::Primary;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Artefact", meta = (AllowPrivateAccess = "true"))
+	FString ArtefactName = "Unknown Artefact";
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Artefact", meta = (AllowPrivateAccess = "true"))
+	FString ArtefactDescription = "No description available.";
+
+	UPROPERTY( EditAnywhere, BlueprintReadOnly, Category = "Artefact", meta = (AllowPrivateAccess = "true"))
+	int ArtefactOrder = 0; // Order of the artefact in the collection
 
 public:
 
