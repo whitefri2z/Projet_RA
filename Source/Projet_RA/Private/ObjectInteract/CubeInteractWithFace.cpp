@@ -34,6 +34,7 @@ void ACubeInteractWithFace::BeginPlay()
 	//FaceCubeTouched = static_cast<EFaceCube>(FMath::RandRange(0, static_cast<int32>(EFaceCube::Bottom)));
 
 	FaceCubeTouched = EFaceCube::Right; // For testing purposes, we set it to Right face
+	SetFaceColor( FaceCubeTouched, FLinearColor::Red); // Set the color of the face to red for testing
 	
 }
 
@@ -98,6 +99,10 @@ void ACubeInteractWithFace::OnInputTouchBeginCPP(  ETouchIndex::Type ButtonPress
 		UE_LOG(LogTemp, Warning, TEXT("Touched component is not the cube mesh."));
 		bIsTouching2 = false;
 	}
+}
+
+void ACubeInteractWithFace::SetFaceColor_Implementation(EFaceCube Face, FLinearColor Color)
+{
 }
 
 void ACubeInteractWithFace::VerifyInteractionWithFace(ETouchIndex::Type ButtonPressed)
@@ -246,13 +251,6 @@ void ACubeInteractWithFace::RotateMesh(FVector2D Delta)
 
 	
 	
-}
-
-FVector ACubeInteractWithFace::GetUnrotatedLocation_Implementation(FVector Location)
-{ 
-	// This function should return the unrotated location based on the cube's rotation.
-	// For simplicity, we will just return the input location as is.
-	return Location;
 }
 
 

@@ -57,8 +57,8 @@ protected:
 	UFUNCTION(BlueprintCallable, Category = "CubeInteraction")
 	void OnInputTouchBeginCPP(ETouchIndex::Type ButtonPressed, UPrimitiveComponent* TouchedComponent);
 
-	UFUNCTION( BlueprintCallable, BlueprintNativeEvent, Category = "CubeInteraction")
-	FVector GetUnrotatedLocation(FVector Location);
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "ColorFace")
+	void SetFaceColor(EFaceCube Face, FLinearColor Color);
 
 	UFUNCTION( BlueprintCallable, Category = "CubeInteraction")
 	void VerifyInteractionWithFace(ETouchIndex::Type ButtonPressed);

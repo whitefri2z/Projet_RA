@@ -42,12 +42,13 @@ void AGameStateAR::ShowEnemies( TArray<AActor*> AllEnemy)
 				AEnemyBase *EnemyShow = Cast<AEnemyBase>(Enemy);
 				if (EnemyShow)
 				{
-					// Example: Set the enemy to be visible or perform some action
-					EnemyShow->SetActorHiddenInGame(false);
-					EnemyShow->SetActorEnableCollision(true);
-					GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Enemy is now visible and enabled!"));
 					// Optionally, you can call a function on the enemy to perform some action
 					EnemyShow->SetActorLocation( RandomLocationEnemies());
+					
+					EEnemyType RandomEnemyType = static_cast<EEnemyType>(FMath::RandRange(0, static_cast<int32>(EEnemyType::Tarasque)));
+					
+					// Initialize the enemy with a specific type and reference to this game state
+					EnemyShow->InitEnemy( RandomEnemyType, this); // Example of initializing the enemy with a type and reference to this game state
 					
 				}
 				else
@@ -73,11 +74,15 @@ FVector AGameStateAR::RandomLocationEnemies()
 	FVector RandomLocation;
 
 	FVector PlayerLocation = GetWorld()->GetFirstPlayerController()->GetPawn()->GetActorLocation();
+	FVector PlayerForwardVector = GetWorld()->GetFirstPlayerController()->GetPawn()->GetActorForwardVector();
 	
 	// Generate a random location within a certain range
-	RandomLocation.X = FMath::RandRange(-1000.0f, 1000.0f);
-	RandomLocation.Y = FMath::RandRange(-1000.0f, 1000.0f);
+	RandomLocation.X = FMath::RandRange(200.f, 1000.0f);
+	RandomLocation.Y = FMath::RandRange(200.f, 1000.0f) * (FMath::RandBool() ? 1.0f : -1.0f); // Randomly choose positive or negative Y
 	RandomLocation.Z = 0.0f; // Assuming a flat ground for simplicity
+
+	RandomLocation *= PlayerForwardVector; // Scale the random location by the player's forward vector to ensure it's in front of the player
+
 	
 	return RandomLocation + PlayerLocation;
 }
