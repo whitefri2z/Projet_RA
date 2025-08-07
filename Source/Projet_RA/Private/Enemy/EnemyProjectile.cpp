@@ -13,8 +13,11 @@ AEnemyProjectile::AEnemyProjectile()
 
 	ProjectileMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ProjectileMesh"));
 	RootComponent = ProjectileMesh;
-	ProjectileMesh->SetCollisionProfileName(TEXT("Projectile"));
+	//ProjectileMesh->SetCollisionProfileName(TEXT("OverlapAll")); // Set collision profile to overlap all
+	ProjectileMesh->SetCollisionEnabled( ECollisionEnabled::Type::QueryAndPhysics ); // Enable collision for both query and physics
 	ProjectileMesh->OnComponentHit.AddDynamic(this, &AEnemyProjectile::OnHitProjectile);
+	ProjectileMesh->OnInputTouchBegin.AddDynamic(this, &AEnemyProjectile::OnTouchBeginProjectile);
+	ProjectileMesh->OnComponentBeginOverlap.AddDynamic(this, &AEnemyProjectile::OnBeginOverlapProjectile);
 
 	ProjectileMovementComponent = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("ProjectileMovementComponent"));
 	ProjectileMovementComponent->bRotationFollowsVelocity = true;
@@ -22,13 +25,7 @@ AEnemyProjectile::AEnemyProjectile()
 	ProjectileMovementComponent->InitialSpeed = 1000.0f; // Set initial speed
 	ProjectileMovementComponent->MaxSpeed = 1000.0f; // Set max speed
 	ProjectileMovementComponent->ProjectileGravityScale = 0.0f; // Disable gravity
-	ProjectileMovementComponent->bShouldBounce = false; // Disable bouncing
-	ProjectileMovementComponent->bIsHomingProjectile = false; // Disable homing
-	ProjectileMovementComponent->HomingAccelerationMagnitude = 0.0f; // No homing acceleration
-	ProjectileMovementComponent->bForceSubStepping = false; // Disable sub-stepping
-	ProjectileMovementComponent->bInterpMovement = false; // Disable interpolation
-	ProjectileMovementComponent->bIsHomingProjectile = false; // Ensure homing is disabled
-
+	ProjectileMovementComponent->Deactivate();
 
 }
 
@@ -43,6 +40,19 @@ void AEnemyProjectile::OnHitProjectile(UPrimitiveComponent* HitComponent, AActor
 	UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Actor hit : ") + OtherActor->GetName());
+}
+
+void AEnemyProjectile::OnTouchBeginProjectile(ETouchIndex::Type ButtonPressed ,  UPrimitiveComponent* TouchedComponent)
+{
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Orange, TEXT("Projectile touched!"));
+	// Implement any additional logic for touch input here
+	//ProjectileMovementComponent->Velocity = ProjectileMovementComponent->Velocity * -1; // Reverse the velocity on touch
+}
+
+void AEnemyProjectile::OnBeginOverlapProjectile(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	GEngine->AddOnScreenDebugMessage( -1, 5.f, FColor::Red, TEXT("Projectile overlapped with: ") + OtherActor->GetName());
 }
 
 // Called every frame

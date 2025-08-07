@@ -78,14 +78,17 @@ void AEnemyBase::ThrowProjectile()
 		if (Projectile)
 		{
 			// Set the projectile's properties, such as location, rotation, etc.
-			Projectile->SetActorLocation(GetActorLocation());
+			Projectile->SetActorLocation(GetActorLocation() + GetActorForwardVector() * FVector(50, 0 ,50)); // Adjust the spawn location as needed
 			Projectile->SetActorRotation(GetActorRotation());
 			// Activate the projectile if needed
-			Projectile->SetActorEnableCollision(false);
+			Projectile->SetActorEnableCollision(true);
 			Projectile->SetActorHiddenInGame(false);
 			// Optionally, you can set the projectile's velocity or other properties here
 			Projectile->ProjectileMovementComponent->Activate(); // Activate the projectile movement component
-			Projectile->ProjectileMovementComponent->Velocity = GetActorForwardVector() * 1000.0f; // Example velocity
+			// Set the initial velocity of the projectile
+			FRotator ProjectileRotationwithplayer = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), GetWorld()->GetFirstPlayerController()->GetPawn()->GetActorLocation());
+			Projectile->SetActorRotation(ProjectileRotationwithplayer);			
+			Projectile->ProjectileMovementComponent->Velocity = GetActorForwardVector() * 500.0f; // Example velocity
 			
 		}
 	}
@@ -159,6 +162,7 @@ void AEnemyBase::InitEnemy(EEnemyType NewEnemyType, AGameStateAR* GameStateAR)
 
 void AEnemyBase::OnTouchEnemy(ETouchIndex::Type ButtonPressed, UPrimitiveComponent* TouchedComponent)
 {
+	 GEngine->AddOnScreenDebugMessage( -1, 5.f, FColor::Yellow, TEXT("Enemy touched!"));
 	switch (EnemyType) {
 	case EEnemyType::Carcolh:
 		break;
