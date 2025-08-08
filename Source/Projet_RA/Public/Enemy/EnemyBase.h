@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
+#include "Interface/InteractionInterface.h"
 #include "EnemyBase.generated.h"
 
 class AEnemyProjectile;
@@ -19,7 +20,7 @@ enum class EEnemyType : uint8
 };
 
 UCLASS()
-class PROJET_RA_API AEnemyBase : public APawn
+class PROJET_RA_API AEnemyBase : public APawn , public IInteractionInterface
 {
 	GENERATED_BODY()
 
@@ -53,6 +54,9 @@ protected:
 
 	UPROPERTY( EditAnywhere , BlueprintReadWrite, Category = "Enemy Loup Drape")
 	TArray<TObjectPtr<AEnemyProjectile>> EnemyProjectile;
+
+	UPROPERTY( VisibleAnywhere , BlueprintReadWrite, Category = "Enemy Loup Drape")
+	int LoupDrapeHitCount = 0;
 
 	FTimerHandle EnemySpawnTimerHandle;
 	
@@ -97,7 +101,8 @@ public:
 	UFUNCTION( BlueprintCallable, Category = "Enemy")
 	void InitEnemy(EEnemyType NewEnemyType , AGameStateAR* GameStateAR);
 
-	
+	//Implementation of the interaction interface
+	virtual  void ActorHitByProjectile_Implementation() override;
 
 
 };

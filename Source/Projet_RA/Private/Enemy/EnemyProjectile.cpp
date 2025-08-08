@@ -40,13 +40,26 @@ void AEnemyProjectile::OnHitProjectile(UPrimitiveComponent* HitComponent, AActor
 	UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Actor hit : ") + OtherActor->GetName());
+	SetActorEnableCollision( false ); // Disable collision after hit
+	ProjectileMovementComponent->StopMovementImmediately(); // Stop the projectile movement
+	ProjectileMesh->SetVisibility(false); // Hide the projectile mesh
+	// If Other Actor Has IInteractionInterface, call the interface method
+	if (OtherActor && OtherActor->GetClass()->ImplementsInterface(UInteractionInterface::StaticClass()))
+	{
+		IInteractionInterface::Execute_ActorHitByProjectile(OtherActor);
+	}
+	else
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("No interaction interface implemented on the hit actor."));
+	}
+	
 }
 
 void AEnemyProjectile::OnTouchBeginProjectile(ETouchIndex::Type ButtonPressed ,  UPrimitiveComponent* TouchedComponent)
 {
 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Orange, TEXT("Projectile touched!"));
 	// Implement any additional logic for touch input here
-	//ProjectileMovementComponent->Velocity = ProjectileMovementComponent->Velocity * -1; // Reverse the velocity on touch
+	ProjectileMovementComponent->Velocity = ProjectileMovementComponent->Velocity * -1; // Reverse the velocity on touch
 }
 
 void AEnemyProjectile::OnBeginOverlapProjectile(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,

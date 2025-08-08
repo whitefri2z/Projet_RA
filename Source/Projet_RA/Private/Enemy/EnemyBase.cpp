@@ -82,13 +82,16 @@ void AEnemyBase::ThrowProjectile()
 			Projectile->SetActorRotation(GetActorRotation());
 			// Activate the projectile if needed
 			Projectile->SetActorEnableCollision(true);
+			Projectile->ProjectileMesh->SetVisibility( true);
 			Projectile->SetActorHiddenInGame(false);
 			// Optionally, you can set the projectile's velocity or other properties here
 			Projectile->ProjectileMovementComponent->Activate(); // Activate the projectile movement component
+			Projectile->ProjectileMovementComponent->SetUpdatedComponent(Projectile->ProjectileMesh); // Set the component to update
 			// Set the initial velocity of the projectile
-			FRotator ProjectileRotationwithplayer = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), GetWorld()->GetFirstPlayerController()->GetPawn()->GetActorLocation());
-			Projectile->SetActorRotation(ProjectileRotationwithplayer);			
+			FRotator ProjectileRotationWithPlayer = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), GetWorld()->GetFirstPlayerController()->GetPawn()->GetActorLocation());
+			Projectile->SetActorRotation(ProjectileRotationWithPlayer);			
 			Projectile->ProjectileMovementComponent->Velocity = GetActorForwardVector() * 500.0f; // Example velocity
+			Projectile->ProjectileMovementComponent->UpdateComponentVelocity();
 			
 		}
 	}
@@ -157,6 +160,23 @@ void AEnemyBase::InitEnemy(EEnemyType NewEnemyType, AGameStateAR* GameStateAR)
 		break;
 	case EEnemyType::Tarasque:
 		break;
+	}
+}
+
+void AEnemyBase::ActorHitByProjectile_Implementation()
+{
+	IInteractionInterface::ActorHitByProjectile_Implementation();
+
+	LoupDrapeHitCount++;
+	if(LoupDrapeHitCount >= 3) // Assuming 3 hits to defeat the enemy
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Loup Drape defeated!"));
+		HideEnemy();
+		LoupDrapeHitCount = 0; // Reset hit count after defeat
+	}
+	else
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Loup Drape hit! Remaining hits: ") + FString::FromInt(3 - LoupDrapeHitCount));
 	}
 }
 

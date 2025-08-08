@@ -4,12 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
+#include "Interface/InteractionInterface.h"
 #include "EnemyProjectile.generated.h"
 
 class UProjectileMovementComponent;
 
 UCLASS()
-class PROJET_RA_API AEnemyProjectile : public APawn
+class PROJET_RA_API AEnemyProjectile : public APawn , public IInteractionInterface
 {
 	GENERATED_BODY()
 
@@ -39,6 +40,5 @@ public:
 
 	// Sets default values for this actor's properties
 	AEnemyProjectile();
-
 
 };

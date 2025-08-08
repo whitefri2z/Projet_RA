@@ -26,5 +26,7 @@ public:
 	UFUNCTION( BlueprintCallable, BlueprintNativeEvent, Category = "Interaction" )
 	void SuccessPuzzel();
 
+	UFUNCTION( BlueprintCallable, BlueprintNativeEvent, Category = "Interaction" )
+	void ActorHitByProjectile();
 	
 };
