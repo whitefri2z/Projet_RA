@@ -47,6 +47,11 @@ protected:
 	UPROPERTY(EditAnywhere , BlueprintReadWrite, Category = "CubeVariables")
 	int RighFaceIndex = 0;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "CubeVariables")
+	FVector FaceTouchNormal;
+
+	TArray<FVector> HexaedreFaceNormals;
+
 	bool bIsTouching2 = false;
 
 	FVector2D PreviousTouchPos;
@@ -64,7 +69,11 @@ protected:
 	void OnInputTouchBeginCPP(ETouchIndex::Type ButtonPressed, UPrimitiveComponent* TouchedComponent);
 
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "ColorFace")
-	void SetFaceColor(EFaceCube Face, FLinearColor Color);
+	void SetFaceColor(FVector NormalFace, FLinearColor Color);
+
+	UFUNCTION( BlueprintCallable, Category = "CubeInteraction")
+	static TArray<FVector> GetNormalisedFaceNormals(TArray<FVector> FaceNormals);
+	
 
 	UFUNCTION( BlueprintCallable, Category = "CubeInteraction")
 	void VerifyInteractionWithFace(ETouchIndex::Type ButtonPressed);

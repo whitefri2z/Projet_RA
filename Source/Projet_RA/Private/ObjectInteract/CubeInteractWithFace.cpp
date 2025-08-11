@@ -24,6 +24,16 @@ ACubeInteractWithFace::ACubeInteractWithFace()
 	ScenePlayerTP = CreateDefaultSubobject<USceneComponent>(TEXT("ScenePlayerTP"));
 	ScenePlayerTP->SetupAttachment(RootComponent);
 
+	HexaedreFaceNormals.Add( FVector(0, 0, 1) ); // Front
+	HexaedreFaceNormals.Add( FVector(0, 0, -1) ); // Back
+	HexaedreFaceNormals.Add( FVector(1, 0, 0) ); // Right
+	HexaedreFaceNormals.Add( FVector(-1, 0, 0) ); // Left
+	HexaedreFaceNormals.Add( FVector(0, 1, 0) ); // Top
+	HexaedreFaceNormals.Add( FVector(0, -1, 0) ); // Bottom
+	
+	
+
+
 }
 
 // Called when the game starts or when spawned
@@ -109,8 +119,19 @@ void ACubeInteractWithFace::OnInputTouchBeginCPP(  ETouchIndex::Type ButtonPress
 	}
 }
 
-void ACubeInteractWithFace::SetFaceColor_Implementation(EFaceCube Face, FLinearColor Color)
+void ACubeInteractWithFace::SetFaceColor_Implementation(FVector NormalFace, FLinearColor Color)
 {
+}
+
+
+TArray<FVector> ACubeInteractWithFace::GetNormalisedFaceNormals(TArray<FVector> FaceNormals)
+{
+	TArray<FVector> Normals;
+	for( const FVector& Normal : FaceNormals)
+	{
+		Normals.Add(Normal.GetSafeNormal());
+	}
+	return Normals;
 }
 
 void ACubeInteractWithFace::VerifyInteractionWithFace(ETouchIndex::Type ButtonPressed)
@@ -139,15 +160,57 @@ void ACubeInteractWithFace::VerifyInteractionWithFace(ETouchIndex::Type ButtonPr
 					UCollisionProfile::Get()->ConvertToObjectType(ECC_WorldStatic), UCollisionProfile::Get()->ConvertToObjectType(ECC_PhysicsBody) }, // Adjust the object type query as needed
 				true,
 				TArray<AActor*>(),
-				EDrawDebugTrace::None,
+				EDrawDebugTrace::ForDuration,
 				HitResult,
 				true
 			);
 
 			if(HitResult.bBlockingHit)
 			{
-				//Get Hit Cube face
-				FVector HitNormal = HitResult.ImpactNormal;
+				//Get impact Normal in world
+				FVector WorldNormal = HitResult.ImpactNormal;
+				//Convert to local space
+				FVector LocalNormal = GetActorTransform().InverseTransformVectorNoScale(WorldNormal);
+				LocalNormal.Normalize();
+
+				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("World Normal: ") + WorldNormal.ToString());
+				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("Local Normal: ") + LocalNormal.ToString());
+
+				//Find the closest face normal
+				int ClosestFaceIndex = -1;
+				float ClosestDotProduct = -1.0f;
+
+				static TArray< FVector> NormalisedFaceNormals = GetNormalisedFaceNormals(HexaedreFaceNormals);
+
+				for (int i = 0; i < NormalisedFaceNormals.Num(); ++i)
+				{
+					float DotProduct = FVector::DotProduct(LocalNormal, NormalisedFaceNormals[i]);
+					if (DotProduct > ClosestDotProduct)
+					{
+						ClosestDotProduct = DotProduct;
+						ClosestFaceIndex = i;
+					}
+				}
+
+				if(NormalisedFaceNormals[ClosestFaceIndex] == FaceTouchNormal)
+				{
+					GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Correct face touched!"));
+					if( InteractwithActorRef && InteractwithActorRef->Implements<UInteractionInterface>())
+					{
+						VerifPuzzleCompletion();
+					}
+				}
+				else
+				{
+					GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Incorrect face touched!"));
+				}
+				
+				
+
+				
+				/*//Get Hit Cube face
+				FVector HitNormal = GetActorTransform().InverseTransformVectorNoScale(HitResult.ImpactNormal);
+				HitNormal.Normalize();
 				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("Hit Normal: ") + HitNormal.ToString());
 				if(HitNormal.X == 1)
 				{
@@ -157,10 +220,7 @@ void ACubeInteractWithFace::VerifyInteractionWithFace(ETouchIndex::Type ButtonPr
 						GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Correct face touched!"));
 						if( InteractwithActorRef && InteractwithActorRef->Implements<UInteractionInterface>())
 						{
-							IInteractionInterface::Execute_SuccessPuzzel(InteractwithActorRef);
-							SetActorHiddenInGame(true);
-							CubeMesh->SetVisibility(false);
-							CubeMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+							VerifPuzzleCompletion();
 						}
 					}
 				}
@@ -172,10 +232,7 @@ void ACubeInteractWithFace::VerifyInteractionWithFace(ETouchIndex::Type ButtonPr
 						GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Correct face touched!"));
 						if( InteractwithActorRef && InteractwithActorRef->Implements<UInteractionInterface>())
 						{
-							IInteractionInterface::Execute_SuccessPuzzel(InteractwithActorRef);
-							SetActorHiddenInGame(true);
-							CubeMesh->SetVisibility(false);
-							CubeMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+							VerifPuzzleCompletion();
 						}
 					}
 				}
@@ -187,10 +244,7 @@ void ACubeInteractWithFace::VerifyInteractionWithFace(ETouchIndex::Type ButtonPr
 						GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Correct face touched!"));
 						if( InteractwithActorRef && InteractwithActorRef->Implements<UInteractionInterface>())
 						{
-							IInteractionInterface::Execute_SuccessPuzzel(InteractwithActorRef);
-							SetActorHiddenInGame(true);
-							CubeMesh->SetVisibility(false);
-							CubeMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+							VerifPuzzleCompletion();
 						}
 					}
 				}
@@ -202,10 +256,7 @@ void ACubeInteractWithFace::VerifyInteractionWithFace(ETouchIndex::Type ButtonPr
 						GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Correct face touched!"));
 						if( InteractwithActorRef && InteractwithActorRef->Implements<UInteractionInterface>())
 						{
-							IInteractionInterface::Execute_SuccessPuzzel(InteractwithActorRef);
-							SetActorHiddenInGame(true);
-							CubeMesh->SetVisibility(false);
-							CubeMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+							VerifPuzzleCompletion();
 						}
 					}
 				}
@@ -217,10 +268,7 @@ void ACubeInteractWithFace::VerifyInteractionWithFace(ETouchIndex::Type ButtonPr
 						GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Correct face touched!"));
 						if( InteractwithActorRef && InteractwithActorRef->Implements<UInteractionInterface>())
 						{
-							IInteractionInterface::Execute_SuccessPuzzel(InteractwithActorRef);
-							SetActorHiddenInGame(true);
-							CubeMesh->SetVisibility(false);
-							CubeMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+							VerifPuzzleCompletion();
 						}
 					}
 				}
@@ -232,13 +280,10 @@ void ACubeInteractWithFace::VerifyInteractionWithFace(ETouchIndex::Type ButtonPr
 						GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Correct face touched!"));
 						if( InteractwithActorRef && InteractwithActorRef->Implements<UInteractionInterface>())
 						{
-							IInteractionInterface::Execute_SuccessPuzzel(InteractwithActorRef);
-							SetActorHiddenInGame(true);
-							CubeMesh->SetVisibility(false);
-							CubeMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+							VerifPuzzleCompletion();
 						}
 					}
-				}
+				}*/
 			}
 			else
 			{
@@ -264,9 +309,9 @@ void ACubeInteractWithFace::RotateMesh(FVector2D Delta)
 void ACubeInteractWithFace::SelectNewFace()
 {
 	// GetRandom face to touch
-	FaceCubeTouched = static_cast<EFaceCube>(FMath::RandRange(0, static_cast<int32>(EFaceCube::Bottom)));
+	FaceTouchNormal = HexaedreFaceNormals[FMath::RandRange(0, HexaedreFaceNormals.Num() - 1)];
 
-	SetFaceColor( FaceCubeTouched, FLinearColor::Red); // Set the color of the face to red for testing
+	SetFaceColor( FaceTouchNormal, FLinearColor::Red); // Set the color of the face to red for testing
 }
 
 void ACubeInteractWithFace::VerifPuzzleCompletion()

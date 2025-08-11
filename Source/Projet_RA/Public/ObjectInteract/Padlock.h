@@ -45,6 +45,9 @@ public:
 
 	UPROPERTY( EditAnywhere, BlueprintReadWrite, Category = "PadlockText" )
 	TObjectPtr<UTextRenderComponent> PadlockText;
+
+	UPROPERTY( EditAnywhere, BlueprintReadWrite, Category = "PadlockScene" )
+	TObjectPtr< USceneComponent> ScenePlayerTP;
 	
 
 protected:

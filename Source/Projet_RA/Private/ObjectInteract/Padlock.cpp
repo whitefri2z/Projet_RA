@@ -51,7 +51,9 @@ APadlock::APadlock()
 	PadlockText->SetText(FText::FromString("___"));
 	PadlockText->SetHorizontalAlignment(EHTA_Center);
 	PadlockText->SetWorldSize(50.f);
-	
+
+	ScenePlayerTP = CreateDefaultSubobject<USceneComponent>(TEXT("ScenePlayerTP"));
+	ScenePlayerTP->SetupAttachment(RootComponent);
 
 	
 
@@ -134,11 +136,15 @@ void APadlock::OnInputTouchBeginCPP(const ETouchIndex::Type FingerIndex, UPrimit
 {
 	GEngine->AddOnScreenDebugMessage( -1, 5.f, FColor::Red, TEXT("PrimitiveComponent touched : "
 																			+ PrimitiveComponent->GetName()));
+	if((GetActorLocation() - PlayerControllerRef->GetPawn()->GetActorLocation()).Size() > 1000.f)
+	{
+		PlayerControllerRef->GetPawn()->SetActorLocation(ScenePlayerTP->GetComponentLocation());
+	}
+	else
+	{
 
 	if(PrimitiveComponent->IsValidLowLevel() && FingerIndex == ETouchIndex::Type::Touch1 && PlayerControllerRef->IsValidLowLevel())
 	{
-		
-		
 		if(PrimitiveComponent == PadlockKeyhole1)
 		{
 			CodePadlockString = ReplaceCharAt(CodePadlockString, CurrentDigit, '1');
@@ -200,6 +206,7 @@ void APadlock::OnInputTouchBeginCPP(const ETouchIndex::Type FingerIndex, UPrimit
 		}
 		
 		PadlockText->SetText(FText::FromString(CodePadlockString));
+	}
 	}
 }
 
