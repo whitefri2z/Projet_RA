@@ -25,11 +25,11 @@ void AGameStateAR::BeginPlay()
 		// Set up the timer delegate to call ShowEnemies function
 		EnemySpawnDelegate.BindUFunction(this, FName("ShowEnemies"), AllEnemy);
 		// Set the timer to call ShowEnemies every 5 seconds
-		GetWorldTimerManager().SetTimer(EnemySpawnTimerHandle, EnemySpawnDelegate, 5.0f, true);
+		GetWorldTimerManager().SetTimer(EnemySpawnTimerHandle, EnemySpawnDelegate, 5.0f, false );
 	}
 }
 
-void AGameStateAR::ShowEnemies( TArray<AActor*> AllEnemy)
+void AGameStateAR::ShowEnemies( TArray<AActor*> AllEnemy) 
 {
 	if (!AllEnemy.IsEmpty())
 	{

@@ -77,6 +77,11 @@ void AEnemyBase::ThrowProjectile()
 	{
 		if (Projectile)
 		{
+			if(Projectile->GetIsUsed())
+			{
+				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Projectile is already used!"));
+				continue; // Skip this projectile if it's already used
+			}
 			// Set the projectile's properties, such as location, rotation, etc.
 			Projectile->SetActorLocation(GetActorLocation() + GetActorForwardVector() * FVector(50, 0 ,50)); // Adjust the spawn location as needed
 			Projectile->SetActorRotation(GetActorRotation());
@@ -92,6 +97,7 @@ void AEnemyBase::ThrowProjectile()
 			Projectile->SetActorRotation(ProjectileRotationWithPlayer);			
 			Projectile->ProjectileMovementComponent->Velocity = GetActorForwardVector() * 500.0f; // Example velocity
 			Projectile->ProjectileMovementComponent->UpdateComponentVelocity();
+			Projectile->SetIsUsed(true); // Mark the projectile as used
 			
 		}
 	}

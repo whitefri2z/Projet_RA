@@ -43,6 +43,7 @@ void AEnemyProjectile::OnHitProjectile(UPrimitiveComponent* HitComponent, AActor
 	SetActorEnableCollision( false ); // Disable collision after hit
 	ProjectileMovementComponent->StopMovementImmediately(); // Stop the projectile movement
 	ProjectileMesh->SetVisibility(false); // Hide the projectile mesh
+	bIsUsed = false; // Mark the projectile as not used
 	// If Other Actor Has IInteractionInterface, call the interface method
 	if (OtherActor && OtherActor->GetClass()->ImplementsInterface(UInteractionInterface::StaticClass()))
 	{

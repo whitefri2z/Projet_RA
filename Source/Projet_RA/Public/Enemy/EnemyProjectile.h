@@ -23,6 +23,10 @@ public:
 	TObjectPtr<UStaticMeshComponent> ProjectileMesh;
 
 protected:
+
+	UPROPERTY( VisibleAnywhere, BlueprintReadOnly, Category = "Projectile Variables")
+	bool bIsUsed = false;
+	
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
@@ -40,5 +44,9 @@ public:
 
 	// Sets default values for this actor's properties
 	AEnemyProjectile();
+
+	void SetIsUsed(bool bUsed) { bIsUsed = bUsed; }
+
+	bool GetIsUsed() const { return bIsUsed; }
 
 };

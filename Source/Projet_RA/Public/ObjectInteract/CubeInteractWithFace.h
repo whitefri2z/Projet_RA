@@ -28,6 +28,9 @@ public:
 	UPROPERTY(EditAnywhere , BlueprintReadWrite, Category = "CubeMesh")
 	TObjectPtr<UStaticMeshComponent> CubeMesh;
 
+	UPROPERTY(EditAnywhere , BlueprintReadWrite, Category = "SceneTP")
+	TObjectPtr<USceneComponent> ScenePlayerTP;
+
 	
 
 protected:
@@ -40,6 +43,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "CubeVariables")
 	TObjectPtr<AActor> InteractwithActorRef;
+
+	UPROPERTY(EditAnywhere , BlueprintReadWrite, Category = "CubeVariables")
+	int RighFaceIndex = 0;
 
 	bool bIsTouching2 = false;
 
@@ -66,6 +72,11 @@ protected:
 	UFUNCTION( BlueprintCallable, Category = "CubeInteraction")
 	void RotateMesh(FVector2D Delta);
 
+	UFUNCTION(BlueprintCallable, Category = "CubeInteraction")
+	void SelectNewFace();
+
+	UFUNCTION( BlueprintCallable, Category = "CubeInteraction")
+	void VerifPuzzleCompletion();
 	
 public:	
 	// Called every frame

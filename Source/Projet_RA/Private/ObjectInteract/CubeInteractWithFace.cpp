@@ -21,6 +21,9 @@ ACubeInteractWithFace::ACubeInteractWithFace()
 
 	CubeMesh->OnInputTouchBegin.AddDynamic(this, &ACubeInteractWithFace::OnInputTouchBeginCPP);
 
+	ScenePlayerTP = CreateDefaultSubobject<USceneComponent>(TEXT("ScenePlayerTP"));
+	ScenePlayerTP->SetupAttachment(RootComponent);
+
 }
 
 // Called when the game starts or when spawned
@@ -31,10 +34,7 @@ void ACubeInteractWithFace::BeginPlay()
 	PlayerControllerRef = GetWorld()->GetFirstPlayerController();
 
 	// GetRandom face to touch
-	//FaceCubeTouched = static_cast<EFaceCube>(FMath::RandRange(0, static_cast<int32>(EFaceCube::Bottom)));
-
-	FaceCubeTouched = EFaceCube::Right; // For testing purposes, we set it to Right face
-	SetFaceColor( FaceCubeTouched, FLinearColor::Red); // Set the color of the face to red for testing
+	SelectNewFace();
 	
 }
 
@@ -74,13 +74,21 @@ void ACubeInteractWithFace::OnInputTouchBeginCPP(  ETouchIndex::Type ButtonPress
 {
 	if (TouchedComponent == CubeMesh && ButtonPressed == ETouchIndex::Touch1)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Touched the cube mesh!"));
-		// Call the function to verify interaction with the cube face
-		// Pass the ButtonPressed parameter to the function
+		if((GetActorLocation() - PlayerControllerRef->GetPawn()->GetActorLocation()).Size() > 1000.f)
+		{
+			PlayerControllerRef->GetPawn()->SetActorLocation(ScenePlayerTP->GetComponentLocation());
+		}
+		else
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Touched the cube mesh!"));
+			// Call the function to verify interaction with the cube face
+			// Pass the ButtonPressed parameter to the function
 
-		TimerVerifyInteractionDelegate = FTimerDelegate::CreateUObject(this, &ACubeInteractWithFace::VerifyInteractionWithFace, ButtonPressed);
+			TimerVerifyInteractionDelegate = FTimerDelegate::CreateUObject(this, &ACubeInteractWithFace::VerifyInteractionWithFace, ButtonPressed);
 		
-		GetWorldTimerManager().SetTimer( TimerVerifyInteraction, TimerVerifyInteractionDelegate, 0.3f, false);
+			GetWorldTimerManager().SetTimer( TimerVerifyInteraction, TimerVerifyInteractionDelegate, 0.3f, false);
+		}
+
 	}
 	else if (TouchedComponent == CubeMesh && ButtonPressed == ETouchIndex::Touch2)
 	{
@@ -251,6 +259,31 @@ void ACubeInteractWithFace::RotateMesh(FVector2D Delta)
 
 	
 	
+}
+
+void ACubeInteractWithFace::SelectNewFace()
+{
+	// GetRandom face to touch
+	FaceCubeTouched = static_cast<EFaceCube>(FMath::RandRange(0, static_cast<int32>(EFaceCube::Bottom)));
+
+	SetFaceColor( FaceCubeTouched, FLinearColor::Red); // Set the color of the face to red for testing
+}
+
+void ACubeInteractWithFace::VerifPuzzleCompletion()
+{
+	RighFaceIndex++;
+
+	if(RighFaceIndex >= 3)
+	{
+		IInteractionInterface::Execute_SuccessPuzzel(InteractwithActorRef);
+		SetActorHiddenInGame(true);
+		CubeMesh->SetVisibility(false);
+		CubeMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	}
+	else
+	{
+		SelectNewFace();
+	}
 }
 
 
