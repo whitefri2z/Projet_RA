@@ -86,7 +86,8 @@ void ACubeInteractWithFace::OnInputTouchBeginCPP(  ETouchIndex::Type ButtonPress
 	{
 		if((GetActorLocation() - PlayerControllerRef->GetPawn()->GetActorLocation()).Size() > 1000.f)
 		{
-			PlayerControllerRef->GetPawn()->SetActorLocation(ScenePlayerTP->GetComponentLocation());
+			IInteractionInterface::Execute_FocusOnActor( PlayerControllerRef->GetPawn(), ScenePlayerTP->GetComponentLocation());
+			
 		}
 		else
 		{

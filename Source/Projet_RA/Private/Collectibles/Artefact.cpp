@@ -18,7 +18,7 @@ AArtefact::AArtefact()
 	ArtefactMesh->SetGenerateOverlapEvents(true);
 	ArtefactMesh->SetSimulatePhysics(false);
 	ArtefactMesh->SetMobility(EComponentMobility::Static);
-	ArtefactMesh->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	ArtefactMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision); // Initially no collision
 	ArtefactMesh->SetCollisionResponseToAllChannels(ECR_Overlap);
 
 	ArtefactMesh->OnInputTouchBegin.AddDynamic(this, &AArtefact::OnInputTouchBegin);

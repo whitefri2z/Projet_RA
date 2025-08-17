@@ -5,6 +5,7 @@
 
 #include "Components/TextRenderComponent.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "Kismet/KismetTextLibrary.h"
 
 // Sets default values
 APadlock::APadlock()
@@ -14,6 +15,7 @@ APadlock::APadlock()
 
 	PadlockMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("PadlockMesh"));
 	RootComponent = PadlockMesh;
+	PadlockMesh->OnInputTouchBegin.AddDynamic(this, &APadlock::OnInputTouchBeginCPP);
 
 	PadlockKeyhole1 = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("PadlockKeyhole1"));
 	PadlockKeyhole1->SetupAttachment(RootComponent);
@@ -73,7 +75,9 @@ void APadlock::BeginPlay()
 
 	// initialize the Code Padlock Randomly
 	CodePadlock = FMath::RandRange(0, 999);
-	GEngine->AddOnScreenDebugMessage(-1, 500.f, FColor::Green, TEXT("Padlock code is: " + FString::FromInt(CodePadlock)));
+	
+	GEngine->AddOnScreenDebugMessage(-1, 500.f, FColor::Green, TEXT("Padlock code is: " +
+		UKismetTextLibrary::Conv_IntToText( CodePadlock, false,true,3,10).ToString()));
 	CodePadlockString = "___";
 	
 }
@@ -138,75 +142,84 @@ void APadlock::OnInputTouchBeginCPP(const ETouchIndex::Type FingerIndex, UPrimit
 																			+ PrimitiveComponent->GetName()));
 	if((GetActorLocation() - PlayerControllerRef->GetPawn()->GetActorLocation()).Size() > 1000.f)
 	{
-		PlayerControllerRef->GetPawn()->SetActorLocation(ScenePlayerTP->GetComponentLocation());
+		IInteractionInterface::Execute_FocusOnActor(PlayerControllerRef->GetPawn(), ScenePlayerTP->GetComponentLocation());
 	}
 	else
 	{
-
-	if(PrimitiveComponent->IsValidLowLevel() && FingerIndex == ETouchIndex::Type::Touch1 && PlayerControllerRef->IsValidLowLevel())
-	{
-		if(PrimitiveComponent == PadlockKeyhole1)
+		if(PrimitiveComponent->IsValidLowLevel() && FingerIndex == ETouchIndex::Type::Touch1 && PlayerControllerRef->IsValidLowLevel())
 		{
-			CodePadlockString = ReplaceCharAt(CodePadlockString, CurrentDigit, '1');
-		}
-		if(PrimitiveComponent == PadlockKeyhole2)
-		{
-			CodePadlockString = ReplaceCharAt(CodePadlockString, CurrentDigit, '2');
-		}
-		if(PrimitiveComponent == PadlockKeyhole3)
-		{
-			CodePadlockString = ReplaceCharAt(CodePadlockString, CurrentDigit, '3');
-		}
-		if(PrimitiveComponent == PadlockKeyhole4)
-		{
-			CodePadlockString = ReplaceCharAt(CodePadlockString, CurrentDigit, '4');
-		}
-		if(PrimitiveComponent == PadlockKeyhole5)
-		{
-			CodePadlockString = ReplaceCharAt(CodePadlockString, CurrentDigit, '5');
-		}
-		if(PrimitiveComponent == PadlockKeyhole6)
-		{
-			CodePadlockString = ReplaceCharAt(CodePadlockString, CurrentDigit, '6');
-		}
-		if(PrimitiveComponent == PadlockKeyhole7)
-		{
-			CodePadlockString = ReplaceCharAt(CodePadlockString, CurrentDigit, '7');
-		}
-		if(PrimitiveComponent == PadlockKeyhole8)
-		{
-			CodePadlockString = ReplaceCharAt(CodePadlockString, CurrentDigit, '8');
-		}
-		if(PrimitiveComponent == PadlockKeyhole9)
-		{
-			CodePadlockString = ReplaceCharAt(CodePadlockString, CurrentDigit, '9');
-		}
-		if(PrimitiveComponent == PadlockKeyhole0)
-		{
-			CodePadlockString = ReplaceCharAt(CodePadlockString, CurrentDigit, '0');
-		}
-		CurrentDigit++;
-		if(CurrentDigit >= NumbreOfDigits)
-		{
-			CurrentDigit = 0;
-			if(CodePadlockString == FString::FromInt(CodePadlock))
+			if(PrimitiveComponent == PadlockKeyhole1)
 			{
-				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Padlock code is correct!"));
-				if(InteractwithActorRef->IsValidLowLevel())
+				CodePadlockString = ReplaceCharAt(CodePadlockString, CurrentDigit, '1');
+				CurrentDigit++;
+			}
+			if(PrimitiveComponent == PadlockKeyhole2)
+			{
+				CodePadlockString = ReplaceCharAt(CodePadlockString, CurrentDigit, '2');
+				CurrentDigit++;
+			}
+			if(PrimitiveComponent == PadlockKeyhole3)
+			{
+				CodePadlockString = ReplaceCharAt(CodePadlockString, CurrentDigit, '3');
+				CurrentDigit++;
+			}
+			if(PrimitiveComponent == PadlockKeyhole4)
+			{
+				CodePadlockString = ReplaceCharAt(CodePadlockString, CurrentDigit, '4');
+				CurrentDigit++;
+			}
+			if(PrimitiveComponent == PadlockKeyhole5)
+			{
+				CodePadlockString = ReplaceCharAt(CodePadlockString, CurrentDigit, '5');
+				CurrentDigit++;
+			}
+			if(PrimitiveComponent == PadlockKeyhole6)
+			{
+				CodePadlockString = ReplaceCharAt(CodePadlockString, CurrentDigit, '6');
+				CurrentDigit++;
+			}
+			if(PrimitiveComponent == PadlockKeyhole7)
+			{
+				CodePadlockString = ReplaceCharAt(CodePadlockString, CurrentDigit, '7');
+				CurrentDigit++;
+			}
+			if(PrimitiveComponent == PadlockKeyhole8)
+			{
+				CodePadlockString = ReplaceCharAt(CodePadlockString, CurrentDigit, '8');
+				CurrentDigit++;
+			}
+			if(PrimitiveComponent == PadlockKeyhole9)
+			{
+				CodePadlockString = ReplaceCharAt(CodePadlockString, CurrentDigit, '9');
+				CurrentDigit++;
+			}
+			if(PrimitiveComponent == PadlockKeyhole0)
+			{
+				CodePadlockString = ReplaceCharAt(CodePadlockString, CurrentDigit, '0');
+				CurrentDigit++;
+			}
+			
+			if(CurrentDigit >= NumbreOfDigits)
+			{
+				CurrentDigit = 0;
+				if(CodePadlockString == UKismetTextLibrary::Conv_IntToText( CodePadlock, false,true,3,10).ToString())
 				{
-					IInteractionInterface::Execute_SuccessPuzzel(InteractwithActorRef);
+					GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Padlock code is correct!"));
+					if(InteractwithActorRef->IsValidLowLevel())
+					{
+						IInteractionInterface::Execute_SuccessPuzzel(InteractwithActorRef);
+					}
+					HideActor();
 				}
-				HideActor();
+				else
+				{
+					GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Padlock code is incorrect!"));
+					CodePadlockString = "___";
+				}
 			}
-			else
-			{
-				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Padlock code is incorrect!"));
-				CodePadlockString = "___";
-			}
-		}
 		
-		PadlockText->SetText(FText::FromString(CodePadlockString));
-	}
+			PadlockText->SetText(FText::FromString(CodePadlockString));
+		}
 	}
 }
 

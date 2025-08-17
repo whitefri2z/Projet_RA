@@ -28,5 +28,8 @@ public:
 
 	UFUNCTION( BlueprintCallable, BlueprintNativeEvent, Category = "Interaction" )
 	void ActorHitByProjectile();
+
+	UFUNCTION( BlueprintCallable, BlueprintNativeEvent, Category = "Interaction-Focus" )
+	void FocusOnActor( FVector FocusLocation );
 	
 };
