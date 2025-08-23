@@ -17,6 +17,12 @@ APadlock::APadlock()
 	RootComponent = PadlockMesh;
 	PadlockMesh->OnInputTouchBegin.AddDynamic(this, &APadlock::OnInputTouchBeginCPP);
 
+	PaperCodePadlock = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("PaperCodePadlock"));
+	PaperCodePadlock->SetupAttachment(RootComponent);
+
+	PadlockCodeText = CreateDefaultSubobject<UTextRenderComponent>(TEXT("PadlockCodeText"));
+	PadlockCodeText->SetupAttachment(PaperCodePadlock);
+
 	PadlockKeyhole1 = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("PadlockKeyhole1"));
 	PadlockKeyhole1->SetupAttachment(RootComponent);
 	PadlockKeyhole1->OnInputTouchBegin.AddDynamic( this, &APadlock::OnInputTouchBeginCPP );
@@ -75,6 +81,28 @@ void APadlock::BeginPlay()
 
 	// initialize the Code Padlock Randomly
 	CodePadlock = FMath::RandRange(0, 999);
+
+	TArray< int > ListCode;
+	ListCode.Add(CodePadlock);
+	for(int i =0; i < 2; i++)
+	{
+		int NewCode = FMath::RandRange(0, 999);
+		while(ListCode.Contains(NewCode))
+		{
+			NewCode = FMath::RandRange(0, 999);
+		}
+		ListCode.Add(NewCode);
+	}
+	//Shuffle the codes
+	ListCode.Sort([](const int32 A, const int32 B) { return FMath::RandBool(); });
+	// Set the CodePadlock to the first element of the list
+	FString CodeList;
+	for(int Code : ListCode)
+	{
+		CodeList += FString::Printf(TEXT("%03d \n"), Code);
+	}
+	PadlockCodeText->SetText(FText::FromString(CodeList));
+	
 	
 	GEngine->AddOnScreenDebugMessage(-1, 500.f, FColor::Green, TEXT("Padlock code is: " +
 		UKismetTextLibrary::Conv_IntToText( CodePadlock, false,true,3,10).ToString()));

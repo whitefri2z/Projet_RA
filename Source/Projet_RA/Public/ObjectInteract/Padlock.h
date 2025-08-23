@@ -19,9 +19,11 @@ public:
 	UPROPERTY(EditAnywhere , BlueprintReadWrite, Category = "PadlockMesh")
 	TObjectPtr<UStaticMeshComponent> PadlockMesh;
 
-	/*UPROPERTY( EditAnywhere, BlueprintReadWrite, Category = "PadlockMesh" )
-	TArray<TObjectPtr<UStaticMeshComponent>> PadlockKeyhole;*/
-
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "PadlockMesh" )
+	TObjectPtr<UStaticMeshComponent> PaperCodePadlock;
+	UPROPERTY( EditAnywhere, BlueprintReadWrite, Category = "PadlockMesh" )
+	TObjectPtr<UTextRenderComponent> PadlockCodeText;
+	
 	UPROPERTY( EditAnywhere, BlueprintReadWrite, Category = "PadlockMesh" )
 	TObjectPtr<UStaticMeshComponent> PadlockKeyhole1;
 	UPROPERTY( EditAnywhere, BlueprintReadWrite, Category = "PadlockMesh" )
