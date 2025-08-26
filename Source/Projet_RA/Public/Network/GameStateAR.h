@@ -35,11 +35,16 @@ protected:
 	UFUNCTION(BlueprintCallable, Category = "GameState")
 	void HideEnemies(TArray<AActor*> AllEnemy);
 
+
+
 	UFUNCTION( BlueprintCallable, Category = "GameState")
 	FVector RandomLocationEnemies();
 	
 	virtual void BeginPlay() override;
 
+public:
+	UFUNCTION( BlueprintCallable, Category = "GameState")
+	void WaitSpawnEnemies();
 
 	
 };

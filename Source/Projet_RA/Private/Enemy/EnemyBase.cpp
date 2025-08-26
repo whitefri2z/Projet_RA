@@ -58,7 +58,7 @@ void AEnemyBase::ActionDrak()
 	{
 		ShowEnemy();
 		bIsVisibleDrak = false;
-		SetActorLocation( FVector(10.0f, 0 , 0.0f)); // Reset position or set to a specific location
+		SetActorLocation( FVector(50.0f, 0 , -50.0f)); // Reset position or set to a specific location
 	}
 }
 
@@ -98,6 +98,7 @@ void AEnemyBase::ThrowProjectile()
 			Projectile->ProjectileMovementComponent->Velocity = GetActorForwardVector() * 500.0f; // Example velocity
 			Projectile->ProjectileMovementComponent->UpdateComponentVelocity();
 			Projectile->SetIsUsed(true); // Mark the projectile as used
+			break;
 			
 		}
 	}
@@ -127,6 +128,9 @@ void AEnemyBase::Tick(float DeltaTime)
 	SetActorHiddenInGame(true);
 	SetActorEnableCollision(false);
 	GetWorldTimerManager().ClearTimer( EnemySpawnTimerHandle); // Clear the timer to stop further actions
+
+	if(!bIsVisibleDrak)
+	GameStateARRef->WaitSpawnEnemies();
 }
 
  void AEnemyBase::ShowEnemy()
@@ -139,8 +143,9 @@ void AEnemyBase::InitEnemy(EEnemyType NewEnemyType, AGameStateAR* GameStateAR)
 {
 	EnemyType = NewEnemyType;
 	GameStateARRef = GameStateAR;
-	EnemyType = EEnemyType::Loup_Drape; // Example of setting the enemy type, you can change this based on your logic
 	UpdateEnemyMesh();
+
+	bIsActive = true;
 
 	// Example: Set the enemy to be visible or perform some action
 	SetActorHiddenInGame(false);
@@ -177,6 +182,7 @@ void AEnemyBase::ActorHitByProjectile_Implementation()
 	if(LoupDrapeHitCount >= 3) // Assuming 3 hits to defeat the enemy
 	{
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Loup Drape defeated!"));
+		bIsActive = false;
 		HideEnemy();
 		LoupDrapeHitCount = 0; // Reset hit count after defeat
 	}
@@ -203,6 +209,7 @@ void AEnemyBase::OnTouchEnemy(ETouchIndex::Type ButtonPressed, UPrimitiveCompone
 			else
 			{
 				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Drak is defeated!"));
+				bIsActive = false;
 				HideEnemy();
 			}
 		}

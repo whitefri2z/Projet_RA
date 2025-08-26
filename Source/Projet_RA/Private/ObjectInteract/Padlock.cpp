@@ -129,6 +129,10 @@ void APadlock::HideActor()
 	SetActorEnableCollision( false );
 }
 
+void APadlock::EffectErreur_Implementation()
+{
+}
+
 // Called every frame
 void APadlock::Tick(float DeltaTime)
 {
@@ -242,7 +246,7 @@ void APadlock::OnInputTouchBeginCPP(const ETouchIndex::Type FingerIndex, UPrimit
 				else
 				{
 					GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Padlock code is incorrect!"));
-					CodePadlockString = "___";
+					EffectErreur();
 				}
 			}
 		

@@ -37,6 +37,9 @@ protected:
 	UPROPERTY( EditAnywhere, BlueprintReadWrite, Category = "Enemy Info")
 	EEnemyType EnemyType;
 
+	UPROPERTY( EditAnywhere, BlueprintReadWrite, Category = "Enemy Info")
+	bool bIsActive = false;
+
 	UPROPERTY( VisibleAnywhere, BlueprintReadWrite, Category = "Enemy Ref")
 	TObjectPtr<AGameStateAR> GameStateARRef;
 
@@ -59,6 +62,7 @@ protected:
 	int LoupDrapeHitCount = 0;
 
 	FTimerHandle EnemySpawnTimerHandle;
+	FTimerDelegate EnemySpawnDelegate;
 	
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

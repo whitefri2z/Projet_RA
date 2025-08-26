@@ -92,6 +92,9 @@ protected:
 	FString ReplaceCharAt( const FString& OriginalString, int32 Index, TCHAR NewChar );
 	UFUNCTION( BlueprintCallable, Category = "Padlock" )
 	void HideActor();
+
+	UFUNCTION( BlueprintCallable, BlueprintNativeEvent, Category = "Padlock" )
+	void EffectErreur();
 	
 public:
 

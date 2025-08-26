@@ -21,11 +21,11 @@ void AGameStateAR::BeginPlay()
 	// Initialize the enemy base actor
 	if (!AllEnemy.IsEmpty())
 	{
-		/*GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("EnemyBase is valid!"));
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("EnemyBase is valid!"));
 		// Set up the timer delegate to call ShowEnemies function
 		EnemySpawnDelegate.BindUFunction(this, FName("ShowEnemies"), AllEnemy);
 		// Set the timer to call ShowEnemies every 5 seconds
-		GetWorldTimerManager().SetTimer(EnemySpawnTimerHandle, EnemySpawnDelegate, 5.0f, false );*/
+		GetWorldTimerManager().SetTimer(EnemySpawnTimerHandle, EnemySpawnDelegate, FMath::RandRange(10.f,30.f), false );
 	}
 }
 
@@ -45,7 +45,7 @@ void AGameStateAR::ShowEnemies( TArray<AActor*> AllEnemy)
 					// Optionally, you can call a function on the enemy to perform some action
 					EnemyShow->SetActorLocation( RandomLocationEnemies());
 					
-					EEnemyType RandomEnemyType = static_cast<EEnemyType>(FMath::RandRange(0, static_cast<int32>(EEnemyType::Tarasque)));
+					EEnemyType RandomEnemyType = static_cast<EEnemyType>(FMath::RandRange(1, 2/*static_cast<int32>(EEnemyType::Tarasque)*/));
 					
 					// Initialize the enemy with a specific type and reference to this game state
 					EnemyShow->InitEnemy( RandomEnemyType, this); // Example of initializing the enemy with a type and reference to this game state
@@ -67,6 +67,16 @@ void AGameStateAR::ShowEnemies( TArray<AActor*> AllEnemy)
 
 void AGameStateAR::HideEnemies(TArray<AActor*> AllEnemy)
 {
+}
+
+void AGameStateAR::WaitSpawnEnemies()
+{
+	TArray<AActor*> AllEnemy;
+	
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), EnemyBase, AllEnemy);
+	EnemySpawnDelegate.BindUFunction(this, FName("ShowEnemies"), AllEnemy);
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, TEXT("Wait Spawn Enemies"));
+	GetWorldTimerManager().SetTimer(EnemySpawnTimerHandle, EnemySpawnDelegate, FMath::RandRange(45,60), false );
 }
 
 FVector AGameStateAR::RandomLocationEnemies()

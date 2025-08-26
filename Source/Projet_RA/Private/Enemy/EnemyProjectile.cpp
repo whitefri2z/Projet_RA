@@ -33,6 +33,7 @@ AEnemyProjectile::AEnemyProjectile()
 void AEnemyProjectile::BeginPlay()
 {
 	Super::BeginPlay();
+	ProjectileMesh->SetVisibility(false);
 	
 }
 
