@@ -29,6 +29,8 @@ AArtefact::AArtefact()
 void AArtefact::BeginPlay()
 {
 	Super::BeginPlay();
+	ArtefactMesh->SetVisibility(false); // Initially invisible
+	ArtefactMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision); // Initially no collision
 	
 }
 
@@ -40,8 +42,7 @@ void AArtefact::OnInputTouchBegin(const ETouchIndex::Type FingerIndex , UPrimiti
 	SetActorHiddenInGame( true ); // Hide the artefact mesh after collection
 	ArtefactMesh->SetVisibility(false);
 	ArtefactMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision); // Disable collision after collection
-	
-	//Destroy();
+
 }
 
 // Called every frame
