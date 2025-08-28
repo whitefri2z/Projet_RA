@@ -45,6 +45,9 @@ protected:
 
 	UPROPERTY( EditAnywhere, BlueprintReadOnly, Category = "Artefact", meta = (AllowPrivateAccess = "true"))
 	int ArtefactOrder = 0; // Order of the artefact in the collection
+	UPROPERTY( EditAnywhere, BlueprintReadOnly, Category = "Artefact", meta = (AllowPrivateAccess = "true"))
+	int ArtefactID = -1; // Unique ID for the artefact, can be set in BeginPlay based on order or other logic
+
 
 public:
 
@@ -61,6 +64,14 @@ protected:
 
 	UFUNCTION(BlueprintCallable, Category = "Artefact")
 	void OnInputTouchBegin(const ETouchIndex::Type FingerIndex , UPrimitiveComponent* PrimitiveComponent);
+
+	//Getters
+	public:
+	UFUNCTION(BlueprintCallable, Category = "Artefact")
+	int GetArtefactID() const { return ArtefactID; };
+
+	UFUNCTION( BlueprintCallable, Category = "Artefact" )
+	int GetArtefactOrder() const { return ArtefactOrder; };
 
 
 
