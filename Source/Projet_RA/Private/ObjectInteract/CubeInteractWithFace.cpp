@@ -195,7 +195,9 @@ void ACubeInteractWithFace::VerifyInteractionWithFace(ETouchIndex::Type ButtonPr
 
 				if(NormalisedFaceNormals[ClosestFaceIndex] == FaceTouchNormal)
 				{
-					GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Correct face touched!"));
+					SetFaceColor( FaceTouchNormal, FLinearColor::Green); // Set the color of the face to green for testing
+					// Reset the color after 0.5 second
+					OldTouchFaceNormal = FaceTouchNormal;
 					if( InteractwithActorRef && InteractwithActorRef->Implements<UInteractionInterface>())
 					{
 						VerifPuzzleCompletion();
@@ -204,87 +206,12 @@ void ACubeInteractWithFace::VerifyInteractionWithFace(ETouchIndex::Type ButtonPr
 				else
 				{
 					GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Incorrect face touched!"));
-				}
-				
-				
+					SetFaceColor( NormalisedFaceNormals[ClosestFaceIndex], FLinearColor::Red); // Set the color of the face to green for testing
+					OldTouchFaceNormal = FaceTouchNormal;
+					// Reset the color after 0.5 second
 
-				
-				/*//Get Hit Cube face
-				FVector HitNormal = GetActorTransform().InverseTransformVectorNoScale(HitResult.ImpactNormal);
-				HitNormal.Normalize();
-				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("Hit Normal: ") + HitNormal.ToString());
-				if(HitNormal.X == 1)
-				{
-					GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Touched the right face!"));
-					if(FaceCubeTouched == EFaceCube::Right)
-					{
-						GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Correct face touched!"));
-						if( InteractwithActorRef && InteractwithActorRef->Implements<UInteractionInterface>())
-						{
-							VerifPuzzleCompletion();
-						}
-					}
+					GetWorldTimerManager().SetTimer( TimerEffectToFace,  this , &ACubeInteractWithFace::EffectToFace, 0.5f, false);
 				}
-				else if (HitNormal.X == -1)
-				{
-					GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Touched the left face!"));
-					if(FaceCubeTouched == EFaceCube::Left)
-					{
-						GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Correct face touched!"));
-						if( InteractwithActorRef && InteractwithActorRef->Implements<UInteractionInterface>())
-						{
-							VerifPuzzleCompletion();
-						}
-					}
-				}
-				else if (HitNormal.Y == 1)
-				{
-					GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Touched the top face!"));
-					if(FaceCubeTouched == EFaceCube::Top)
-					{
-						GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Correct face touched!"));
-						if( InteractwithActorRef && InteractwithActorRef->Implements<UInteractionInterface>())
-						{
-							VerifPuzzleCompletion();
-						}
-					}
-				}
-				else if (HitNormal.Y == -1)
-				{
-					GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Touched the bottom face!"));
-					if(FaceCubeTouched == EFaceCube::Bottom)
-					{
-						GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Correct face touched!"));
-						if( InteractwithActorRef && InteractwithActorRef->Implements<UInteractionInterface>())
-						{
-							VerifPuzzleCompletion();
-						}
-					}
-				}
-				else if (HitNormal.Z == 1)
-				{
-					GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Touched the front face!"));
-					if(FaceCubeTouched == EFaceCube::Front)
-					{
-						GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Correct face touched!"));
-						if( InteractwithActorRef && InteractwithActorRef->Implements<UInteractionInterface>())
-						{
-							VerifPuzzleCompletion();
-						}
-					}
-				}
-				else if (HitNormal.Z == -1)
-				{
-					GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Touched the back face!"));
-					if(FaceCubeTouched == EFaceCube::Back)
-					{
-						GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Correct face touched!"));
-						if( InteractwithActorRef && InteractwithActorRef->Implements<UInteractionInterface>())
-						{
-							VerifPuzzleCompletion();
-						}
-					}
-				}*/
 			}
 			else
 			{
@@ -312,7 +239,7 @@ void ACubeInteractWithFace::SelectNewFace()
 	// GetRandom face to touch
 	FaceTouchNormal = HexaedreFaceNormals[FMath::RandRange(0, HexaedreFaceNormals.Num() - 1)];
 
-	SetFaceColor( FaceTouchNormal, FLinearColor::Red); // Set the color of the face to red for testing
+	SetFaceColor( FaceTouchNormal, FLinearColor(1.f, 0.5f, 0.f, 1.f)); // Set the color of the face to red for testing
 }
 
 void ACubeInteractWithFace::VerifPuzzleCompletion()
@@ -328,8 +255,13 @@ void ACubeInteractWithFace::VerifPuzzleCompletion()
 	}
 	else
 	{
-		SelectNewFace();
+		GetWorldTimerManager().SetTimer( TimerEffectToFace,  this , &ACubeInteractWithFace::SelectNewFace, 0.5f, false);
 	}
+}
+
+void ACubeInteractWithFace::EffectToFace()
+{
+	SetFaceColor( OldTouchFaceNormal, FLinearColor(1.f, 0.5f, 0.f, 1.f));
 }
 
 

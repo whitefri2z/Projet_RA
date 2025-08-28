@@ -50,6 +50,9 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "CubeVariables")
 	FVector FaceTouchNormal;
 
+	UPROPERTY( VisibleAnywhere, BlueprintReadOnly, Category = "CubeVariables")
+	FVector OldTouchFaceNormal;
+
 	TArray<FVector> HexaedreFaceNormals;
 
 	bool bIsTouching2 = false;
@@ -59,6 +62,8 @@ protected:
 
 	FTimerHandle TimerVerifyInteraction;
 	FTimerDelegate TimerVerifyInteractionDelegate;
+
+	FTimerHandle TimerEffectToFace;
 
 
 	
@@ -86,6 +91,9 @@ protected:
 
 	UFUNCTION( BlueprintCallable, Category = "CubeInteraction")
 	void VerifPuzzleCompletion();
+
+	UFUNCTION( BlueprintCallable, Category = "CubeInteraction")
+	void EffectToFace();
 	
 public:	
 	// Called every frame
