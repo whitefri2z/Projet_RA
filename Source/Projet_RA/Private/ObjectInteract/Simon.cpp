@@ -2,6 +2,7 @@
 
 
 #include "ObjectInteract/Simon.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 ASimon::ASimon()
@@ -79,6 +80,7 @@ void ASimon::CheckPlayerInput(int PlayerInput)
 	{
 		ColorButton( PlayerInput-1, FLinearColor::Green ); // Change button color to green on correct input
 		CurrentStep++;
+		UGameplayStatics::PlaySound2D(GetWorld(), CorrectButtonSound);
 		if(CurrentStep >= MaxSteps)
 		{
 			// Player completed the sequence
@@ -98,6 +100,7 @@ void ASimon::CheckPlayerInput(int PlayerInput)
 		CurrentStep = 0; // Reset the current step on wrong input
 		ColorAllButtons(FLinearColor::Red); // Change all buttons to red on wrong input
 		GetWorldTimerManager().SetTimer( SequenceTimerHandle, this, &ASimon::PlaySimonSequence, 1.f, false ); // Restart the sequence after a short delay
+		UGameplayStatics::PlaySound2D(GetWorld(), WrongButtonSound);
 	}
 }
 

@@ -28,6 +28,11 @@ public:
 
 	UPROPERTY( EditAnywhere, BlueprintReadWrite, Category = "SimonMesh - SceneTP" )
 	TObjectPtr<USceneComponent> ScenePlayerTP;
+
+	UPROPERTY( EditAnywhere, BlueprintReadWrite, Category = "Simon | Sound" )
+	TObjectPtr<USoundBase> CorrectButtonSound;
+	UPROPERTY( EditAnywhere, BlueprintReadWrite, Category = "Simon | Sound" )
+	TObjectPtr<USoundBase> WrongButtonSound;
 	
 protected:
 

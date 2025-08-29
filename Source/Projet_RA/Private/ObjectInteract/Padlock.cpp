@@ -6,6 +6,7 @@
 #include "Components/TextRenderComponent.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Kismet/KismetTextLibrary.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 APadlock::APadlock()

@@ -7,6 +7,7 @@
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Network/GameStateAR.h"
+#include "Kismet/GameplayStatics.h"
 
 
 // Sets default values
@@ -82,6 +83,7 @@ void AEnemyBase::ThrowProjectile()
 				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Projectile is already used!"));
 				continue; // Skip this projectile if it's already used
 			}
+			UGameplayStatics::PlaySound2D(GetWorld(), Projectile->ProjectileSpawnSound);
 			// Set the projectile's properties, such as location, rotation, etc.
 			Projectile->SetActorLocation(GetActorLocation() + GetActorForwardVector() * FVector(50, 0 ,50)); // Adjust the spawn location as needed
 			Projectile->SetActorRotation(GetActorRotation());
@@ -151,6 +153,7 @@ void AEnemyBase::InitEnemy(EEnemyType NewEnemyType, AGameStateAR* GameStateAR)
 	SetActorHiddenInGame(false);
 	SetActorEnableCollision(true);
 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Enemy is now visible and enabled!"));
+	UGameplayStatics::PlaySound2D(GetWorld(), SpawnSound);
 
 	// Initialize enemy rotation for look player
 	//Get Rotation to look at player

@@ -29,6 +29,8 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Mesh")
 	TObjectPtr<USkeletalMeshComponent> EnemySkeletal;
 
+	UPROPERTY( EditAnywhere, BlueprintReadWrite, Category = "Enemy | Sound" )
+	TObjectPtr<USoundBase> SpawnSound;
 
 	
 

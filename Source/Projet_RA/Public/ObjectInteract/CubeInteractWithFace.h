@@ -31,7 +31,11 @@ public:
 	UPROPERTY(EditAnywhere , BlueprintReadWrite, Category = "SceneTP")
 	TObjectPtr<USceneComponent> ScenePlayerTP;
 
-	
+
+	UPROPERTY( EditAnywhere, BlueprintReadWrite, Category = "Cube | Sound" )
+	TObjectPtr<USoundBase> CorrectButtonSound;
+	UPROPERTY( EditAnywhere, BlueprintReadWrite, Category = "Cube | Sound" )
+	TObjectPtr<USoundBase> WrongButtonSound;
 
 protected:
 

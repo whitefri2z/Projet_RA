@@ -3,6 +3,7 @@
 
 #include "Collectibles/Artefact.h"
 
+#include "AssetTypeActions/AssetDefinition_SoundBase.h"
 #include "GameFramework/GameStateBase.h"
 #include "Player/CustomPlayerState.h"
 

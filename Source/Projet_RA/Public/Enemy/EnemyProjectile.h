@@ -22,6 +22,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Projectile")
 	TObjectPtr<UStaticMeshComponent> ProjectileMesh;
 
+	UPROPERTY( EditAnywhere, BlueprintReadWrite, Category = "Projectile | Sound" )
+	TObjectPtr<USoundBase> ProjectileSpawnSound;
+
 protected:
 
 	UPROPERTY( VisibleAnywhere, BlueprintReadOnly, Category = "Projectile Variables")

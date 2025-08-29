@@ -5,6 +5,7 @@
 
 #include "Kismet/KismetMathLibrary.h"
 #include "Kismet/KismetSystemLibrary.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 ACubeInteractWithFace::ACubeInteractWithFace()
@@ -196,6 +197,8 @@ void ACubeInteractWithFace::VerifyInteractionWithFace(ETouchIndex::Type ButtonPr
 				if(NormalisedFaceNormals[ClosestFaceIndex] == FaceTouchNormal)
 				{
 					SetFaceColor( FaceTouchNormal, FLinearColor::Green); // Set the color of the face to green for testing
+					// Play correct face sound
+					UGameplayStatics::PlaySound2D(GetWorld(), CorrectButtonSound);
 					// Reset the color after 0.5 second
 					OldTouchFaceNormal = FaceTouchNormal;
 					if( InteractwithActorRef && InteractwithActorRef->Implements<UInteractionInterface>())
@@ -206,6 +209,8 @@ void ACubeInteractWithFace::VerifyInteractionWithFace(ETouchIndex::Type ButtonPr
 				else
 				{
 					GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Incorrect face touched!"));
+					// Play inccorrect face sound
+					UGameplayStatics::PlaySound2D(GetWorld(), WrongButtonSound);
 					SetFaceColor( NormalisedFaceNormals[ClosestFaceIndex], FLinearColor::Red); // Set the color of the face to green for testing
 					OldTouchFaceNormal = FaceTouchNormal;
 					// Reset the color after 0.5 second
