@@ -26,6 +26,8 @@ protected:
 
 	UPROPERTY( VisibleAnywhere, BlueprintReadOnly, Category = "Projectile Variables")
 	bool bIsUsed = false;
+
+	FTimerHandle UnusedHandle;
 	
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -38,6 +40,9 @@ protected:
 
 	UFUNCTION( BlueprintCallable, Category = "Projectile")
 	void OnBeginOverlapProjectile(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+	UFUNCTION()
+	void HideProjectile();
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -48,5 +53,7 @@ public:
 	void SetIsUsed(bool bUsed) { bIsUsed = bUsed; }
 
 	bool GetIsUsed() const { return bIsUsed; }
+
+	void InitProjectile();
 
 };

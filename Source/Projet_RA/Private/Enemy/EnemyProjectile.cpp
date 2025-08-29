@@ -29,6 +29,11 @@ AEnemyProjectile::AEnemyProjectile()
 
 }
 
+void AEnemyProjectile::InitProjectile()
+{
+	GetWorldTimerManager( ).SetTimer( UnusedHandle, this, &AEnemyProjectile::HideProjectile, 4.0f, false );
+}
+
 // Called when the game starts or when spawned
 void AEnemyProjectile::BeginPlay()
 {
@@ -45,6 +50,7 @@ void AEnemyProjectile::OnHitProjectile(UPrimitiveComponent* HitComponent, AActor
 	ProjectileMovementComponent->StopMovementImmediately(); // Stop the projectile movement
 	ProjectileMesh->SetVisibility(false); // Hide the projectile mesh
 	bIsUsed = false; // Mark the projectile as not used
+	GetWorldTimerManager().ClearTimer( UnusedHandle ); // Clear the timer if the projectile hits something before the timer ends
 	// If Other Actor Has IInteractionInterface, call the interface method
 	if (OtherActor && OtherActor->GetClass()->ImplementsInterface(UInteractionInterface::StaticClass()))
 	{
@@ -68,6 +74,14 @@ void AEnemyProjectile::OnBeginOverlapProjectile(UPrimitiveComponent* OverlappedC
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	GEngine->AddOnScreenDebugMessage( -1, 5.f, FColor::Red, TEXT("Projectile overlapped with: ") + OtherActor->GetName());
+}
+
+void AEnemyProjectile::HideProjectile()
+{
+	ProjectileMesh->SetVisibility(false);
+	ProjectileMovementComponent->StopMovementImmediately(); // Stop the projectile movement
+	SetActorEnableCollision( false ); // Disable collision after hit
+	bIsUsed = false; // Mark the projectile as not used
 }
 
 // Called every frame
